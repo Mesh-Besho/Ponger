@@ -1,7 +1,7 @@
 import pyray as p
-from game import game
 
 class entity:
+    from game import game
     X = 0
     Y = 0
     W = 0
@@ -25,3 +25,9 @@ class entity:
         hello = p.Rectangle(float(self.X), float(self.Y), float(self.W), float(self.H))
         return hello
     
+    def draw(self):
+        pass
+
+    def update(self, dt):
+        pass
+        

@@ -1,4 +1,6 @@
-from entity_manager import entity_manager
-
 class game:
-    entity_manager = entity_manager()
+    def __init__(self):
+        from entity_manager import entity_manager
+        from level import level
+        self.entities = entity_manager()
+    

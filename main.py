@@ -1,15 +1,17 @@
 import pyray as p
 
-print("HERE IS WHATEVER i WANT, 95225ABCDEFGHIJKLMNOPQRSTUVWXyZ 7rk se77rvt b7tb wuretu GY uyK KI VUKU uyk D tju FV\fyk kfgbfsb sjsgsdvuygkbyiwycsdygPNAME")
-
+from game import game
+from level import level
 
 p.init_window(800, 600, b"Ponger")
 p.init_audio_device()
 #p.toggle_fullscreen()
 p.set_target_fps(30)
 
-#game.mesh_besho()
-
+game = game()
+level = level(game)
+level.load("levels/l1.ponger")
+game.entities.add(level)
 
 while not p.window_should_close():
     dt = p.get_frame_time()
@@ -19,11 +21,9 @@ while not p.window_should_close():
     
     #game.update(dt)
 
-    #for list in all_files.entities.get_all():
-    #    list.update(dt)
-    #    list.letsdraw()    
+    for e in game.entities.get_all():
+        e.update(dt)
+        e.draw()    
     
     p.end_drawing()
     
-
-#5.h

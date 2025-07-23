@@ -1,11 +1,11 @@
-import entity
 
 class entity_manager:
+    from entity import entity
     #cheer up class
     def __init__(self):
         self.entities = []
 
-    def add(self, thing:entity.entity):
+    def add(self, thing:entity):
         self.entities.append(thing)
 
     def remove(self, thing):
