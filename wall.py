@@ -3,7 +3,7 @@ import pyray as p
 class wall():
     def __init__(self, game):
         self.vertices = []
-        self.colour = ""
+        self.colour = p.BLACK
     
     def become_a_rectangle(self):
         TLcorner = p.Vector2(0, 0)

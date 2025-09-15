@@ -20,6 +20,10 @@ class entity:
     def get_location(self):
         XY = p.Vector2(self.X, self.Y)
         return XY
+    def set_location(self, XY:p.Vector2):
+        self.X = XY.x
+        self.Y = XY.y
+
     
     def get_bounds(self):
         hello = p.Rectangle(float(self.X), float(self.Y), float(self.W), float(self.H))

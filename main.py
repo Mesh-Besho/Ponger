@@ -1,5 +1,5 @@
 import pyray as p
-
+from ball import ball 
 from game import game
 from level import level
 
@@ -7,11 +7,13 @@ p.init_window(800, 600, b"Ponger")
 p.init_audio_device()
 #p.toggle_fullscreen()
 p.set_target_fps(60)
-
 game = game()
 level = level(game)
 level.load("levels/l1.ponger")
 game.entities.add(level)
+my_ball = ball(level)
+my_ball.set_location(p.Vector2(50.0, 50.0))
+game.entities.add(my_ball)
 
 camera = p.Camera2D(p.Vector2(), p.Vector2(), 0.0, 1.0)
 
@@ -48,8 +50,8 @@ while not p.window_should_close():
     if p.is_key_down(p.KeyboardKey.KEY_RIGHT_CONTROL):
         if p.is_key_down(p.KeyboardKey.KEY_LEFT_SHIFT):
             if p.is_key_down(p.KeyboardKey.KEY_F7):
-                if p.is_key_down(p.KeyboardKey.KEY_RIGHT_BRACKET):
-                    pass
+                if p.is_key_down(p.KeyboardKey.KEY_ZERO):
+                    exit("shhhhhhh")
 
     p.end_mode_2d()
     p.end_drawing()
