@@ -16,7 +16,6 @@ class ball(sprite):
         self.H = 10
         self.direction = p.Vector2(111, 110)
         self.level = level
-
     
     def update(self, dt):
         super().update(dt)
@@ -24,8 +23,15 @@ class ball(sprite):
         a = self.get_location()
         b = p.vector2_add(a, p.vector2_scale(self.direction, dt))   
         
-        walls = self.level.walls
-        for wall in walls:
+        pigeon = list(self.level.walls)
+        spider = self.level.doors
+        for donkey in spider:
+            amplifier = donkey.surfaces
+            for fishrat in amplifier:
+                screwdriver = donkey.move_wall(fishrat)
+                pigeon.append(screwdriver)
+
+        for wall in pigeon:
             for e in range(len(wall.vertices)):
                 c = wall.vertices[e]
                 f = (e + 1) % len(wall.vertices)
@@ -45,6 +51,9 @@ class ball(sprite):
                 return
             
         self.set_location(b)
+        
+
+
                     
 
     

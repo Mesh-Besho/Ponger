@@ -1,8 +1,13 @@
 import json
 import pyray as p
 
+
 from wall import wall
+from door import door
+
 from entity import entity
+
+
 
 class level(entity):#gjshugw
     def __init__(slef, game):
@@ -11,6 +16,7 @@ class level(entity):#gjshugw
         slef.walls = []
         slef.pushables = []
         slef.doors = []
+    
 
     def load(self, filename):
         f = open(filename)
@@ -20,23 +26,43 @@ class level(entity):#gjshugw
         shapes = the_json["Shapes"]
         BCS = the_json["background_colour"]
         self.BC = self.convort(BCS)
+        doors = the_json["doors"]
 
         for shape in shapes:
-            pig = wall(self.game)
-          
-            for vertex in shape["Vertices"]:
-                pig_vec2 = p.Vector2(float(vertex["X"]), float(vertex["Y"]))
-                pig.vertices.append(pig_vec2)
-
+            pig = self.load_wall(shape)
             self.walls.append(pig)
 
-            colour = shape["Color"]
-            _colour = self.convort(colour)
-            pig.colour = _colour
+        for door in doors:
+            cow = self.load_door(door)
+            self.doors.append(cow)
 
-                        
+    def load_wall(self, shape):
+        pig = wall(self.game)
+          
+        for vertex in shape["Vertices"]:
+            pig_vec2 = self.load_vertex(vertex)
+            pig.vertices.append(pig_vec2)
 
+        colour = shape["Color"]
+        _colour = self.convort(colour)
+        pig.colour = _colour  
 
+        return pig
+    
+    def load_door(self, DooR):
+        cow = door()
+
+        cow.hinge = self.load_vertex(DooR["hinge"])
+        
+        for banana in DooR["walls"]:
+            surface = self.load_wall(banana)
+            cow.surfaces.append(surface)
+
+        return cow
+
+    def load_vertex(self, vertex):
+        pig_vec2 = p.Vector2(float(vertex["X"]), float(vertex["Y"]))
+        return pig_vec2
 
     def convort(self, str:str):
         if str == "RED":
@@ -51,19 +77,36 @@ class level(entity):#gjshugw
             return p.GOLD        
         else:
             return p.LIME
+
+    def update(self, dt):
+        for x  in self.doors:
+            self.turn_door(x)
+    def turn_door(self, door:door):
+        for s in door.surfaces:
+            for v in s.vertices:
+                nv = self.actually_turn_door(v, door)
+                v.x = nv.x
+                v.y = nv.y
+                
+                            
+    def actually_turn_door(self, v, d:door):
+        nv = p.vector2_rotate(v, d.spin_speed)
+        return nv
         
-    
 
-
-    
-
-    
+        
+   
     def draw(self):
         p.clear_background(self.BC)    
         x = 0
+
         for wall in self.walls:
             self.draw_wall(wall, x)
             x += 1
+        
+        for door in self.doors:
+            self.draw_door(door)
+        
         
 
 
@@ -78,3 +121,12 @@ class level(entity):#gjshugw
 
             #colour = colours[x % len(colours)]
             p.draw_triangle(a, b, c, colour)
+    
+    def draw_door(self, door:door):
+        for x in door.surfaces:
+            moved_x = door.move_wall(x)
+            self.draw_wall(moved_x, 67)
+        self.draw_hinge(door.hinge, door.colour)
+
+    def draw_hinge(self, hinge, colour):
+        p.draw_circle(int(hinge.x), int(hinge.y), 1.0, colour)
