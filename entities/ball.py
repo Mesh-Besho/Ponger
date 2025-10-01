@@ -1,6 +1,6 @@
 #i@:
 import pyray as p
-from sprite import sprite
+from entities.sprite import sprite
 from level import level
 from wall import wall
 import maths
@@ -9,7 +9,6 @@ import maths
 class ball(sprite):
     #c':
     def __init__(self, level:level):
-
         t = p.load_texture("ball.png")
         super().__init__(t)
         self.W = 10

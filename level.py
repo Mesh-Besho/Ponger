@@ -3,9 +3,9 @@ import pyray as p
 
 
 from wall import wall
-from door import door
+from entities.door import door
 
-from entity import entity
+from entities.entity import entity
 
 
 
@@ -52,7 +52,7 @@ class level(entity):#gjshugw
     def load_door(self, DooR):
         cow = door()
 
-        cow.hinge = self.load_vertex(DooR["hinge"])
+        cow.set_location(self.load_vertex(DooR["hinge"]))
         
         for banana in DooR["walls"]:
             surface = self.load_wall(banana)
@@ -80,21 +80,8 @@ class level(entity):#gjshugw
 
     def update(self, dt):
         for x  in self.doors:
-            self.turn_door(x)
-    def turn_door(self, door:door):
-        for s in door.surfaces:
-            for v in s.vertices:
-                nv = self.actually_turn_door(v, door)
-                v.x = nv.x
-                v.y = nv.y
-                
-                            
-    def actually_turn_door(self, v, d:door):
-        nv = p.vector2_rotate(v, d.spin_speed)
-        return nv
-        
-
-        
+            x.update(dt)
+       
    
     def draw(self):
         p.clear_background(self.BC)    
@@ -126,7 +113,7 @@ class level(entity):#gjshugw
         for x in door.surfaces:
             moved_x = door.move_wall(x)
             self.draw_wall(moved_x, 67)
-        self.draw_hinge(door.hinge, door.colour)
+        self.draw_hinge(door.get_location(), door.colour)
 
     def draw_hinge(self, hinge, colour):
         p.draw_circle(int(hinge.x), int(hinge.y), 1.0, colour)

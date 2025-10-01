@@ -1,4 +1,5 @@
 import pyray as p
+from doers.doer import doer
 
 class entity:
     from game import game
@@ -9,9 +10,12 @@ class entity:
 
     def __init__(self, game:game):
         self.game = game
-
+        self.current_do = doer()
+        self.next_do = doer()
+        
     def hit_test(self, coordinates:p.Vector2):
         r = self.get_bounds()
+        
         if p.check_collision_point_rec(coordinates, r):
             return True
         else:
@@ -33,5 +37,6 @@ class entity:
         pass
 
     def update(self, dt):
-        pass
+        if not self.current_do is None:
+            self.current_do.do(self, dt)
         

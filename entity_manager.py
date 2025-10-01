@@ -1,6 +1,6 @@
 
 class entity_manager:
-    from entity import entity
+    from entities.entity import entity
     #cheer up class
     def __init__(self):
         self.entities = []

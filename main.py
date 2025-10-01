@@ -1,5 +1,5 @@
 import pyray as p
-from ball import ball 
+from entities.ball import ball 
 from game import game
 from level import level
 
