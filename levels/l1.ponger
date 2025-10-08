@@ -406,18 +406,36 @@
             },
             {
               "X": 1,
-              "Y": -400
+              "Y": -40
             },
             {
               "X": -1,
-              "Y": -400
+              "Y": -40
             }
           ]
         }
-      ]
+      ],
+      "doers": {
+        "open": {
+          "type": "mover",
+          "to_x": 200,
+          "to_y": 200,
+          "speed": 30.939393939393939393
+        },
+        "close": {
+          "type": "mover",
+          "to_x": 200,
+          "to_y": 120,
+          "speed": 40
+        }
+      },
+      "events": {
+        "on_start": "close",
+        "on_left_click": "open",
+        "on_right_click": "close"
+      }
     }
   ],
   "pushables": [
-
   ]
 }

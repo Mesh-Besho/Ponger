@@ -5,6 +5,9 @@ import pyray as p
 from wall import wall
 from entities.door import door
 
+from doers.mover import mover
+#from doers.blabla import blabla
+
 from entities.entity import entity
 
 
@@ -23,15 +26,15 @@ class level(entity):#gjshugw
         the_text = f.read()
         the_json = json.loads(the_text)
 
-        shapes = the_json["Shapes"]
         BCS = the_json["background_colour"]
         self.BC = self.convort(BCS)
-        doors = the_json["doors"]
-
+        
+        shapes = the_json["Shapes"]
         for shape in shapes:
             pig = self.load_wall(shape)
             self.walls.append(pig)
 
+        doors = the_json["doors"]
         for door in doors:
             cow = self.load_door(door)
             self.doors.append(cow)
@@ -58,8 +61,32 @@ class level(entity):#gjshugw
             surface = self.load_wall(banana)
             cow.surfaces.append(surface)
 
-        return cow
+        donkey = DooR["doers"]
+        for doer_key in donkey:
+            doer = donkey[doer_key]
+            sheep = self.load_doer(doer)
+            cow.doers[doer_key] = sheep
 
+        salmon = DooR["events"]
+        for event_key in salmon:
+            whale = salmon[event_key]
+            cow.events[event_key] = whale
+
+        return cow
+   
+    def load_doer(self, DoeR):
+        if DoeR["type"] == "mover":
+            return self.load_mover(DoeR)
+        #if DoeR[type] == "blabla"
+        #   return self.load_blabla(ghu, yje, hdyt, gst)
+    
+    def load_mover(self, MoveR):
+        to_x = MoveR["to_x"]
+        to_y = MoveR["to_y"]
+        speed = float(MoveR["speed"])
+        jfy = mover(to_x, to_y, speed)
+        return jfy
+    
     def load_vertex(self, vertex):
         pig_vec2 = p.Vector2(float(vertex["X"]), float(vertex["Y"]))
         return pig_vec2
@@ -79,10 +106,10 @@ class level(entity):#gjshugw
             return p.LIME
 
     def update(self, dt):
-        for x  in self.doors:
+        for x in self.doors:
             x.update(dt)
+        
        
-   
     def draw(self):
         p.clear_background(self.BC)    
         x = 0
@@ -93,20 +120,15 @@ class level(entity):#gjshugw
         
         for door in self.doors:
             self.draw_door(door)
-        
-        
-
 
     def draw_wall(self, wall:wall, x:int):
         l = len(wall.vertices)
         for n in range(1, l-1):
-            #colours = [p.RED, p.BLUE, p.BEIGE, p.YELLOW, p.BLACK, p.BROWN, p.GREEN, p.GOLD, p.GRAY]
             a = wall.vertices[0]
             b = wall.vertices[n]
             c = wall.vertices[n+1]
             colour = wall.colour
 
-            #colour = colours[x % len(colours)]
             p.draw_triangle(a, b, c, colour)
     
     def draw_door(self, door:door):

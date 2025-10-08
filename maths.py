@@ -25,3 +25,11 @@ def get_intersection(a:p.Vector2, b:p.Vector2, c:p.Vector2, d:p.Vector2) -> Unio
         return intersection
 
     return None
+
+def is_in_circle(c:p.Vector2, r:float, m:p.Vector2):
+    how_far = p.vector2_distance(c, m)
+
+    if how_far <= r:
+        return True
+    else:
+        return False

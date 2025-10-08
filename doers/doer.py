@@ -3,7 +3,9 @@ import pyray as p
 
 
 class doer:
-    #from entities.entity import entity
+    def __init__(self):
+        self.done = False
+        self.repeat = False
 
     def do(self, entity:entity, dt:float):
         pass
