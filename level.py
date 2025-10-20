@@ -5,7 +5,6 @@ import pyray as p
 from wall import wall
 from entities.door import door
 
-from doers.mover import mover
 #from doers.blabla import blabla
 
 from entities.entity import entity
@@ -77,14 +76,24 @@ class level(entity):#gjshugw
     def load_doer(self, DoeR):
         if DoeR["type"] == "mover":
             return self.load_mover(DoeR)
+        if DoeR["type"] == "door_spinner":
+            return self.load_door_spinner(DoeR)
         #if DoeR[type] == "blabla"
         #   return self.load_blabla(ghu, yje, hdyt, gst)
     
     def load_mover(self, MoveR):
+        from doers.mover import mover
         to_x = MoveR["to_x"]
         to_y = MoveR["to_y"]
         speed = float(MoveR["speed"])
         jfy = mover(to_x, to_y, speed)
+        return jfy
+    
+    def load_door_spinner(self, SpinneR):
+        from doers.door_spinner import door_spinner
+        speed = float(SpinneR["speed"])
+        angle = float(SpinneR["angle"])
+        jfy = door_spinner(angle, speed)
         return jfy
     
     def load_vertex(self, vertex):

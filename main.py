@@ -16,7 +16,7 @@ my_ball.set_location(p.Vector2(50.0, 50.0))
 game.entities.add(my_ball)
 
 from doers.sprite_spinner import sprite_spinner
-my_ball.current_do = sprite_spinner(360)
+#my_ball.current_do = sprite_spinner(360)
 
 camera = p.Camera2D(p.Vector2(), p.Vector2(), 0.0, 1.0)
 

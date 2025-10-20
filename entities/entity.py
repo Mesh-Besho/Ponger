@@ -55,7 +55,7 @@ class entity:
                 self.next_do = new_next
         
     def do_something_soon(self, thing:doer):
-        thing.done = False
+        thing.reset()
         if self.current_do is None:
             self.current_do = thing
         else:
