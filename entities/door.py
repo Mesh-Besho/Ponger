@@ -4,6 +4,7 @@ import math
 import maths
 from entities.entity import entity
 from wall import wall
+import controls
 
 HINGE_CLICK_RADIUS = 10
 
@@ -52,7 +53,7 @@ class door(entity):
         #click flag V
         c = self.get_location()
         r = HINGE_CLICK_RADIUS
-        m = p.get_mouse_position()
+        m = controls.good_mouse_position
 
         if maths.is_in_circle(c, r, m):
             if p.is_mouse_button_pressed(p.MouseButton.MOUSE_BUTTON_LEFT):

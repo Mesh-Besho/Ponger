@@ -435,5 +435,29 @@
     }
   ],
   "pushables": [
+  ],
+  "portals": [
+    
+    {
+      "pos": {
+        "X": 45,
+        "Y": 95
+      },
+      "range": 10,
+      
+      "name": "A1",
+      "destination": "A2"
+    },
+    {
+      "pos": {
+        "X": 485,
+        "Y": 195
+      },
+      "range": 10,
+      
+      "name": "A2",
+      "destination": "A1"
+    }
+  
   ]
 }

@@ -8,7 +8,7 @@ from entities.door import door
 #from doers.blabla import blabla
 
 from entities.entity import entity
-
+from portal import portal
 
 
 class level(entity):#gjshugw
@@ -16,7 +16,7 @@ class level(entity):#gjshugw
         #donk
         super().__init__(game)
         slef.walls = []
-        slef.pushables = []
+        slef.portals = []
         slef.doors = []
     
 
@@ -37,6 +37,11 @@ class level(entity):#gjshugw
         for door in doors:
             cow = self.load_door(door)
             self.doors.append(cow)
+        
+        portals = the_json["portals"]
+        for portal in portals:
+            sheep = self.load_portal(portal)
+            self.portals.append(sheep)
 
     def load_wall(self, shape):
         pig = wall(self.game)
@@ -99,6 +104,20 @@ class level(entity):#gjshugw
     def load_vertex(self, vertex):
         pig_vec2 = p.Vector2(float(vertex["X"]), float(vertex["Y"]))
         return pig_vec2
+    
+    def load_portal(self, PortaL):
+        pos = self.load_vertex(PortaL["pos"])
+        destination = PortaL["destination"]
+        name = PortaL["name"]
+        sheep = portal(pos, PortaL["range"], destination, name)
+        return sheep
+    
+    def find_portal_by_name(self, name:str):
+        for x in self.portals:
+            if x.name == name:
+                return x
+        return None
+
 
     def convort(self, str:str):
         if str == "RED":
@@ -129,6 +148,9 @@ class level(entity):#gjshugw
         
         for door in self.doors:
             self.draw_door(door)
+
+        for portal in self.portals:
+            portal.draw()
 
     def draw_wall(self, wall:wall, x:int):
         l = len(wall.vertices)
