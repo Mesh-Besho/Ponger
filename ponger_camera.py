@@ -1,10 +1,8 @@
 #c=1158223
-from game import game
 import pyray as p
 from entities.entity import entity
 class p_camera(entity):
-    def __init__(self, level):
-        self.level = level
+    def __init__(self):
         self.me = p.Camera2D(p.Vector2(p.get_screen_width()/2, p.get_screen_height()/2), p.Vector2(0, 0), 0, 1)
         self.follow_obj = None
     

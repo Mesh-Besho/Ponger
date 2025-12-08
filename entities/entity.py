@@ -2,14 +2,12 @@ import pyray as p
 from doers.doer import doer
 
 class entity:
-    from game import game
     X = 0
     Y = 0
     W = 0
     H = 0
 
-    def __init__(self, game:game):
-        self.game = game
+    def __init__(self):
         self.current_do = doer()
         self.current_do.done = True
         self.next_do = doer()

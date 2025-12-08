@@ -10,7 +10,7 @@ HINGE_CLICK_RADIUS = 10
 
 class door(entity):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.surfaces = []
         self.colour = p.WHITE
         #5 speeds in LPS
@@ -36,7 +36,7 @@ class door(entity):
         #self.next_do.repeat = True
     
     def move_wall(self, x:wall):
-        donkey = wall(None)
+        donkey = wall()
         donkey.colour = x.colour
         
         for v in x.vertices:

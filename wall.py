@@ -1,7 +1,7 @@
 import pyray as p
 #from entity import entity
 class wall:
-    def __init__(self, game):
+    def __init__(self):
         self.vertices = []
         self.colour = p.BLACK
     

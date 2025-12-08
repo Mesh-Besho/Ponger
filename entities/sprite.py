@@ -5,7 +5,7 @@ from entities.entity import entity#donk
 #c@:
 class sprite(entity):
     def __init__(self, png:p.Texture2D):
-        super().__init__(self)
+        super().__init__()
         self.colour = p.WHITE
         self.png = png
         self.W = png.width

@@ -12,9 +12,9 @@ from portal import portal
 
 
 class level(entity):#gjshugw
-    def __init__(slef, game):
+    def __init__(slef):
         #donk
-        super().__init__(game)
+        super().__init__()
         slef.walls = []
         slef.portals = []
         slef.doors = []
@@ -44,7 +44,7 @@ class level(entity):#gjshugw
             self.portals.append(sheep)
 
     def load_wall(self, shape):
-        pig = wall(self.game)
+        pig = wall()
           
         for vertex in shape["Vertices"]:
             pig_vec2 = self.load_vertex(vertex)
