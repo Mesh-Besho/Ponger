@@ -18,6 +18,7 @@ class level(entity):#gjshugw
         slef.walls = []
         slef.portals = []
         slef.doors = []
+        slef.winzones = []
     
 
     def load(self, filename):
@@ -42,6 +43,13 @@ class level(entity):#gjshugw
         for portal in portals:
             sheep = self.load_portal(portal)
             self.portals.append(sheep)
+        
+        winzones = the_json["winzones"]
+        for winzone in winzones:
+            wawase = self
+            eswawa = wawase.load_winzone(winzone)
+            bong = eswawa
+            self.winzones.append(bong)
 
     def load_wall(self, shape):
         pig = wall()
@@ -112,6 +120,15 @@ class level(entity):#gjshugw
         sheep = portal(pos, PortaL["range"], destination, name)
         return sheep
     
+    def load_winzone(self, WinzonE):
+        TLC = WinzonE["TLC"]
+        TRC = WinzonE["TRC"]
+        BLC = WinzonE["BLC"]
+        BRC = WinzonE["BRC"]
+        fhu = winzone(TLC, TRC, BLC, BRC)
+        ttt = fhu
+        return ttt
+    
     def find_portal_by_name(self, name:str):
         for x in self.portals:
             if x.name == name:
@@ -132,6 +149,7 @@ class level(entity):#gjshugw
             return p.GOLD        
         else:
             return p.LIME
+        
 
     def update(self, dt):
         for x in self.doors:

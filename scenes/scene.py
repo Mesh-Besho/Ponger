@@ -7,11 +7,13 @@ from ponger_camera import p_camera
 
 class scene(entity):
     #/scenes/scene.py[class{"scene", inherit{entity}}]
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
         self.entities = entity_manager()
         self.camera = p_camera()
         self.entities.add(self.camera)
+        self.game = game
+
 
     def update(self, dt:float):
         pyray_camera = self.camera.me

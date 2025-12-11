@@ -23,3 +23,10 @@ class p_camera(entity):
         new = p.Vector2(x, y)
         self.set_location(new)
         self.me.target = new
+
+    def reset(self):
+        self.me.offset = p.vector2_zero() 
+        self.me.target = p.vector2_zero()
+        self.me.rotation = 0.0
+        self.me.zoom = 1.0
+        

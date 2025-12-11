@@ -3,8 +3,8 @@ import pyray as p
 import scenes.scene as scene
 class level_scene(scene.scene):
     #/scenes/menu_scenes.py[class{"menu", inherit{scene}}]
-    def __init__(self, level_num:int):
-        super().__init__()
+    def __init__(self, level_num:int, game):
+        super().__init__(game)
 
         from level import level
         from entities.ball import ball
@@ -47,5 +47,10 @@ class level_scene(scene.scene):
     #            if p.is_key_down(p.KeyboardKey.KEY_F7):
     #                if p.is_key_down(p.KeyboardKey.KEY_ZERO):
     #                    exit("shhhhhhh")
+
+        if p.is_key_down(p.KeyboardKey.KEY_LEFT_CONTROL or p.is_key_down(p.KeyboardKey.KEY_RIGHT_CONTROL)):
+            if p.is_key_down(p.KeyboardKey.KEY_Q):
+                from scenes.menu_scene import menu_scene
+                self.game.current_scene = menu_scene(self.game)
 
     
