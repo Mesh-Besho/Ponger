@@ -4,6 +4,7 @@ import pyray as p
 
 from wall import wall
 from entities.door import door
+from winzone import winzone
 
 #from doers.blabla import blabla
 
@@ -121,11 +122,12 @@ class level(entity):#gjshugw
         return sheep
     
     def load_winzone(self, WinzonE):
-        TLC = WinzonE["TLC"]
-        TRC = WinzonE["TRC"]
-        BLC = WinzonE["BLC"]
-        BRC = WinzonE["BRC"]
-        fhu = winzone(TLC, TRC, BLC, BRC)
+        TLC = self.load_vertex(WinzonE["TLC"])
+        TRC = self.load_vertex(WinzonE["TRC"])
+        BLC = self.load_vertex(WinzonE["BLC"])
+        BRC = self.load_vertex(WinzonE["BRC"])
+        fhu = winzone([TLC, TRC, BRC, BLC])
+        
         ttt = fhu
         return ttt
     
@@ -158,11 +160,12 @@ class level(entity):#gjshugw
        
     def draw(self):
         p.clear_background(self.BC)    
-        x = 0
-
+        
         for wall in self.walls:
-            self.draw_wall(wall, x)
-            x += 1
+            self.draw_wall(wall)
+
+        for winzone in self.winzones:
+            self.draw_winzone(winzone)
         
         for door in self.doors:
             self.draw_door(door)
@@ -170,21 +173,27 @@ class level(entity):#gjshugw
         for portal in self.portals:
             portal.draw()
 
-    def draw_wall(self, wall:wall, x:int):
-        l = len(wall.vertices)
-        for n in range(1, l-1):
-            a = wall.vertices[0]
-            b = wall.vertices[n]
-            c = wall.vertices[n+1]
-            colour = wall.colour
-
-            p.draw_triangle(a, b, c, colour)
+    def draw_wall(self, wall:wall):
+        self.draw_polygon(wall.vertices, wall.colour)
+    
+    def draw_winzone(self, wall:winzone):
+        self.draw_polygon(wall.vertices, wall.colour)
     
     def draw_door(self, door:door):
         for x in door.surfaces:
             moved_x = door.move_wall(x)
-            self.draw_wall(moved_x, 67)
+            self.draw_wall(moved_x)
         self.draw_hinge(door.get_location(), door.colour)
 
     def draw_hinge(self, hinge, colour):
         p.draw_circle(int(hinge.x), int(hinge.y), 1.0, colour)
+
+    def draw_polygon(self, vertices:list, colour:p.Color):
+        l = len(vertices)
+        for n in range(1, l-1):
+            a = vertices[0]
+            b = vertices[n]
+            c = vertices[n+1]
+            colour = colour
+
+            p.draw_triangle(a, b, c, colour)

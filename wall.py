@@ -1,6 +1,6 @@
 import pyray as p
-#from entity import entity
-class wall:
+from entities.entity import entity
+class wall(entity):
     def __init__(self):
         self.vertices = []
         self.colour = p.BLACK
