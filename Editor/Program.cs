@@ -3,4 +3,14 @@
 using MeshBesho.Ponger.Editor;
 using Application = Eto.Forms.Application;
 
-new Application().Run(new MainForm());
+namespace MeshBesho.Ponger.Editor
+	{
+	public static class Program
+		{
+		[STAThread]
+		public static void Main(String[] args)
+			{
+			new Application().Run(new MainForm());
+			}
+		}
+	}

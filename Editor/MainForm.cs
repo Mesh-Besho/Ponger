@@ -45,9 +45,6 @@ namespace MeshBesho.Ponger.Editor
 			ToolBar = MainToolBar = new ToolBar();
 
 			Renderer = new LevelRenderPanel();
-			Renderer.MouseUp += (s, e) => Editor.InvokeMouseUp(e.Buttons, e.Location);
-			Renderer.MouseDown += (s, e) => Editor.InvokeMouseDown(e.Buttons, e.Location);
-			Renderer.MouseMove += (s, e) => Editor.InvokeMouseMove(e.Buttons, e.Location);
 
 			var Level = new Level();
 			Editor = new LevelEditor(Level);

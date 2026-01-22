@@ -17,11 +17,16 @@ namespace MeshBesho.Ponger.Editor
 		public override IEnumerable<ToolItem> GetToolbarItems() =>
 				[new ButtonToolItem { Text = "Delete" }];
 
-		public override void InvokeMouseDown(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
-			MouseDownEntity = Editor.HitTest(point);
-
-			Editor.SelectedEntity = MouseDownEntity;
+			if (button == MouseButtons.Primary)
+				{
+				MouseDownEntity = Editor.HitTest(point);
+				Editor.SelectedEntity = MouseDownEntity;
+				return true;
+				}
+			
+			return false;
 			}
 		}
 	}

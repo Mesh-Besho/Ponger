@@ -16,41 +16,43 @@ namespace MeshBesho.Ponger.Editor
 			}
 		public override ToolType Type => ToolType.Wall;
 
-		public override void InvokeMouseDown(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
-			base.InvokeMouseDown(button, point);
-
 			point = Snap(point);
 
 			if (button == MouseButtons.Primary)
+				{
 				CommitPoint(point);
+				return true;
+				}
 
-			else if (button == MouseButtons.Alternate)
+			if (button == MouseButtons.Alternate)
 				{
 				RollbackPoint();
 
-				if (_CurrentOverlay == null)
-					return;
+				if (_CurrentOverlay != null)
+					_CurrentOverlay.End = point;
 
-				_CurrentOverlay.End = point;
+				return true;
 				}
+			
+			return false;
 			}
 
-		private void RollbackPoint()
+		public override Boolean InvokeMouseMove(MouseButtons button, PointF point)
 			{
-			if (_Points.Count < 2)
+			if (_CurrentOverlay != null)
 				{
-				Reset();
-				return;
+				point = Snap(point);
+				_CurrentOverlay.End = point;
+				Editor.InvokeRedraw();
+				
+				return true;
 				}
-
-			Editor.RemoveOverlay(_CurrentOverlay);
-			Editor.InvokeRedraw();
-
-			_Points.Pop();
-			_CurrentOverlay = _Overlays.Pop();
+			
+			return false;
 			}
-
+		
 		public override void Reset()
 			{
 			ClearOverlays();
@@ -78,6 +80,21 @@ namespace MeshBesho.Ponger.Editor
 			Editor.InvokeRedraw();
 			}
 
+		private void RollbackPoint()
+			{
+			if (_Points.Count < 2)
+				{
+				Reset();
+				return;
+				}
+
+			Editor.RemoveOverlay(_CurrentOverlay);
+			Editor.InvokeRedraw();
+
+			_Points.Pop();
+			_CurrentOverlay = _Overlays.Pop();
+			}
+		
 		private PointF Snap(PointF point) => new PointF((Int32)(point.X / 50) * 50, (Int32)(point.Y / 50) * 50);
 
 		private void OnWallComplete()
@@ -105,22 +122,6 @@ namespace MeshBesho.Ponger.Editor
 			_CurrentOverlay = null;
 
 			Editor.InvokeRedraw();
-			}
-
-		public override void InvokeMouseUp(MouseButtons button, PointF point)
-			{
-			base.InvokeMouseUp(button, point);
-
-			}
-
-		public override void InvokeMouseMove(MouseButtons button, PointF point)
-			{
-			if (_CurrentOverlay != null)
-				{
-				point = Snap(point);
-				_CurrentOverlay.End = point;
-				Editor.InvokeRedraw();
-				}
 			}
 		}
 	}

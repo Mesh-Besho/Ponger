@@ -12,11 +12,11 @@ namespace MeshBesho.Ponger.Editor
 		public LevelEditor Editor { get; }
 		public abstract ToolType Type { get; }
 
-		public virtual void InvokeMouseUp(MouseButtons button, PointF point) { }
+		public virtual Boolean InvokeMouseUp(MouseButtons button, PointF point) => false;
 
-		public virtual void InvokeMouseDown(MouseButtons button, PointF point) { }
+		public virtual Boolean InvokeMouseDown(MouseButtons button, PointF point) => false;
 
-		public virtual void InvokeMouseMove(MouseButtons button, PointF point) { }
+		public virtual Boolean InvokeMouseMove(MouseButtons button, PointF point) => false;
 
 		public virtual void Reset() { }
 

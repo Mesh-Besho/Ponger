@@ -22,6 +22,7 @@ namespace MeshBesho.Ponger.Editor
 
 			OnModeChanged(ToolType.Mouse);
 			}
+		
 		public Level Level { get; }
 
 		public ObservableCollection<ToolItem> ToolbarItems { get; }
@@ -36,7 +37,7 @@ namespace MeshBesho.Ponger.Editor
 
 				_SelectedEntity = value;
 
-				RedrawNeeded?.Invoke();
+				InvokeRedraw();
 				}
 			}
 
@@ -100,20 +101,19 @@ namespace MeshBesho.Ponger.Editor
 			_Overlays.Remove(overlay);
 			}
 
-		public void InvokeMouseDown(MouseButtons button, PointF point)
+		public Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
-			Tool?.InvokeMouseDown(button, point);
-
+			return Tool?.InvokeMouseDown(button, point) ?? false;
 			}
 
-		public void InvokeMouseUp(MouseButtons button, PointF point)
+		public Boolean InvokeMouseUp(MouseButtons button, PointF point)
 			{
-			Tool?.InvokeMouseUp(button, point);
+			return Tool?.InvokeMouseUp(button, point) ?? false;
 			}
 
-		public void InvokeMouseMove(MouseButtons button, PointF point)
+		public Boolean InvokeMouseMove(MouseButtons button, PointF point)
 			{
-			Tool?.InvokeMouseMove(button, point);
+			return Tool?.InvokeMouseMove(button, point) ?? false;
 			}
 
 		public void InvokeRedraw()
