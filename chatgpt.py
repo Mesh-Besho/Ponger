@@ -62,7 +62,7 @@ def solve_quadratic_for_hit(p: pyray.Vector2, move: pyray.Vector2, E: pyray.Vect
     return True, clamp01(t_candidate)
 
 
-def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt: float):
+def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt: float, collision_callback=None):
     """Update circle position and velocity for one tick (continuous motion, exact collision)."""
     remaining = dt
     EPS_FACTOR = 1e-4
@@ -137,6 +137,9 @@ def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt
 
         # --- Move to contact point ---
         circle.center = pyray.vector2_add(circle.center, pyray.vector2_scale(move, earliest_t))
+
+        if collision_callback is not None:
+            collision_callback(circle.center)
 
         # --- Combine normals (for corners) ---
         combined = pyray.Vector2(0.0, 0.0)

@@ -10,7 +10,7 @@ class portal(sprite):
         #/portal.py[class portal.function __init__]
         self.radius = rang
         self.set_location(pos)
-        t = p.load_texture("ball.png")
+        t = "ball.png"
         super().__init__(t)
         self.W = 10
         self.H = 10

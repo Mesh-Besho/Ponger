@@ -2,6 +2,7 @@ import json
 import pyray as p
 
 
+from entities.key import key
 from wall import wall
 from entities.door import door
 from winzone import winzone
@@ -20,6 +21,8 @@ class level(entity):#gjshugw
         slef.portals = []
         slef.doors = []
         slef.winzones = []
+        slef.objects = []
+        slef.keys = []
     
 
     def load(self, filename):
@@ -27,30 +30,39 @@ class level(entity):#gjshugw
         the_text = f.read()
         the_json = json.loads(the_text)
 
-        BCS = the_json["background_colour"]
+        BCS = the_json.get("background_colour", "ghehujGUK")
         self.BC = self.convort(BCS)
         
-        shapes = the_json["Shapes"]
+        shapes = the_json.get("Shapes", [])
         for shape in shapes:
             pig = self.load_wall(shape)
             self.walls.append(pig)
 
-        doors = the_json["doors"]
+        doors = the_json.get("doors", [])
         for door in doors:
             cow = self.load_door(door)
             self.doors.append(cow)
-        
-        portals = the_json["portals"]
+
+        portals = the_json.get("portals", [])
         for portal in portals:
             sheep = self.load_portal(portal)
             self.portals.append(sheep)
-        
-        winzones = the_json["winzones"]
+
+        winzones = the_json.get("winzones", [])
         for winzone in winzones:
             wawase = self
             eswawa = wawase.load_winzone(winzone)
             bong = eswawa
             self.winzones.append(bong)
+
+        objects = the_json.get("objects", [])
+        for obj in objects:
+            sheep = self.load_object(obj)
+            self.objects.append(sheep)
+
+            if isinstance(sheep, key):
+                self.keys.append(sheep)
+
 
     def load_wall(self, shape):
         pig = wall()
@@ -127,16 +139,28 @@ class level(entity):#gjshugw
         BLC = self.load_vertex(WinzonE["BLC"])
         BRC = self.load_vertex(WinzonE["BRC"])
         fhu = winzone([TLC, TRC, BRC, BLC])
-        
         ttt = fhu
         return ttt
-    
+
+    def load_key(self, KeY):
+        pos = self.load_vertex(KeY["pos"])
+        TEXTure = KeY["texture"]
+        key_id = KeY["obj_id"]
+        sheep = key(pos, TEXTure, key_id)
+        return sheep
+
+    def load_object(self, ObjecT):
+        type = ObjecT["type"]
+        if type == "key":
+            sheep = self.load_key(ObjecT)
+        return sheep
+
     def find_portal_by_name(self, name:str):
+
         for x in self.portals:
             if x.name == name:
                 return x
         return None
-
 
     def convort(self, str:str):
         if str == "RED":
@@ -151,6 +175,7 @@ class level(entity):#gjshugw
             return p.GOLD        
         else:
             return p.LIME
+    
         
 
     def update(self, dt):

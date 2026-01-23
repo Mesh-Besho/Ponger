@@ -16,6 +16,9 @@ class scene(entity):
 
 
     def update(self, dt:float):
+        myparent = super()
+        myparent.update(dt)
+
         pyray_camera = self.camera.me
         controls.update_controls(pyray_camera)
         for e in self.entities.get_all():
@@ -32,6 +35,11 @@ class scene(entity):
 
         p.end_mode_2d()
         p.end_drawing()
+
+    def die(self):
+        for e in self.entities.get_all():
+            self.entities.remove(e)
+        print("gdujgshud")
 
     #\class
 #\file

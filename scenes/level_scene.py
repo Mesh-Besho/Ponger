@@ -1,6 +1,9 @@
 #/scenes/menu_scene.py
+from doers.timer import timer
 import pyray as p
 import scenes.scene as scene
+from entities.text import text
+
 class level_scene(scene.scene):
     #/scenes/menu_scenes.py[class{"menu", inherit{scene}}]
     def __init__(self, level_num:int, game):
@@ -8,16 +11,25 @@ class level_scene(scene.scene):
 
         from level import level
         from entities.ball import ball
+        from entities.hud import hud
 
         #/scenes/menu_scene.py[class{menu}(funtion{"__init__", paramaters{self}})]
         
-        level = level()
-        level.load(f"levels/l{level_num}.ponger")
-        self.entities.add(level)
+        self.hud = hud(self)
+        self.entities.add(self.hud)
 
-        my_ball = ball(level)
+        self.level = level()
+        self.level.load(f"levels/l{level_num}.ponger")
+        self.entities.add(self.level)
+        self.won = False
+
+        my_ball = ball(self)
         my_ball.set_location(p.Vector2(50.0, 50.0))
         self.entities.add(my_ball)
+        self.level_num = level_num
+        for mikey in self.level.objects:
+            self.entities.add(mikey)
+
 
         #from entities.sprite import sprite
         #test_mouse = sprite(p.load_texture("mesh_besho.png"))
@@ -27,6 +39,21 @@ class level_scene(scene.scene):
 
         #from doers.sprite_spinner import sprite_spinner
         #my_ball.current_do = sprite_spinner(360)
+
+    def win(self):
+        if not self.won:
+            self.entities.add(text("YOU WIN!", 100, 101, 28, p.BLUE))
+            self.do_something_soon(timer(5.32, self.win_part_b))
+            self.won = True
+    def win_part_b(self):
+        self.game.switch_scene(level_scene(self.level_num + 1, self.game))
+
+    def collect_obj(self, obj):
+        self.level.keys.remove(obj)
+        self.level.objects.remove(obj)
+        self.entities.remove(obj)
+        obj.when_collected(self)
+        self.game.player.collect_item(obj)
 
     def update(self, dt):
         super().update(dt)
