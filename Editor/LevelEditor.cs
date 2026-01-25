@@ -11,7 +11,7 @@ namespace MeshBesho.Ponger.Editor
 
 		private ToolType _Mode;
 
-		private readonly List<OverlayLine> _Overlays = new List<OverlayLine>();
+		private readonly List<IRenderable> _Overlays = new List<IRenderable>();
 
 		private EditorEntity? _SelectedEntity;
 
@@ -91,14 +91,16 @@ namespace MeshBesho.Ponger.Editor
 			throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown tool type");
 			}
 
-		public void AddOverlay(OverlayLine overlay)
+		public void AddOverlay(IRenderable overlay)
 			{
 			_Overlays.Add(overlay);
+			InvokeRedraw();
 			}
 
-		public void RemoveOverlay(OverlayLine overlay)
+		public void RemoveOverlay(IRenderable overlay)
 			{
 			_Overlays.Remove(overlay);
+			InvokeRedraw();
 			}
 
 		public Boolean InvokeMouseDown(MouseButtons button, PointF point)
@@ -136,9 +138,9 @@ namespace MeshBesho.Ponger.Editor
 				}
 
 			foreach (var overlay in _Overlays)
-				overlay.Render(graphics);
+				overlay.Render(graphics, RenderFlags.None);
 			}
 
-		public EditorEntity HitTest(PointF point) => Level.HitTest(point);
+		public Boolean HitTest(PointF point, out HitTestResult result) => Level.HitTest(point, out result);
 		}
 	}

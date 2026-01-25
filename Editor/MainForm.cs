@@ -1,3 +1,6 @@
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Eto.Drawing;
 using Eto.Forms;
 
@@ -6,16 +9,16 @@ namespace MeshBesho.Ponger.Editor
 	public class MainForm : Form
 		{
 		private readonly ToolItem[] _ToolToolItems;
-		private readonly LevelEditor Editor;
+		private readonly LevelRenderPanel _Renderer;
 
 		private readonly ToolBar MainToolBar;
 		private readonly RadioCommand ModeMouseCommand;
 		private readonly RadioCommand ModeWallCommand;
 		private readonly Command OpenCommand;
-
-		private readonly LevelRenderPanel Renderer;
 		private readonly Command SaveCommand;
 
+		private LevelEditor _Editor;
+		
 		public MainForm()
 			{
 			OpenCommand = new Command(InvokeOpen) { MenuText = "Open" };
@@ -41,20 +44,15 @@ namespace MeshBesho.Ponger.Editor
 						}
 					}
 				};
-
+			
 			ToolBar = MainToolBar = new ToolBar();
+			
+			_Renderer = new LevelRenderPanel();
 
-			Renderer = new LevelRenderPanel();
-
-			var Level = new Level();
-			Editor = new LevelEditor(Level);
-			Editor.RedrawNeeded += () => Renderer.Invalidate();
-			Editor.ModeChanged += () => RebuildToolbar();
-
-			Renderer.Editor = Editor;
-
+			Open(new Level());
+			
 			Size = new Size(800, 600);
-			Content = Renderer;
+			Content = _Renderer;
 
 			RebuildToolbar();
 			}
@@ -63,7 +61,7 @@ namespace MeshBesho.Ponger.Editor
 			{
 			var Items = new List<ToolItem>(_ToolToolItems);
 
-			var ToolItems = Editor.Tool?.GetToolbarItems().ToArray() ?? Array.Empty<ToolItem>();
+			var ToolItems = _Editor.Tool?.GetToolbarItems().ToArray() ?? Array.Empty<ToolItem>();
 
 			if (ToolItems.Length > 0)
 				{
@@ -82,9 +80,35 @@ namespace MeshBesho.Ponger.Editor
 
 		private void InvokeOpen(Object? sender, EventArgs e)
 			{
-			throw new NotImplementedException();
+			using var Picker = new OpenFileDialog
+				{
+				CheckFileExists = true,
+				Filters = { new FileFilter("Level files", "*.ponger") }
+				};
+
+			if (Picker.ShowDialog(this) == DialogResult.Cancel)
+				return;
+
+			Open(Picker.FileName);
+			}
+		
+		private void Open(String fileName)
+			{
+			var Text = File.ReadAllText(fileName);
+			var Json = JsonObject.Parse(Text).AsObject();
+
+			Open(Level.FromJson(Json));
 			}
 
+		private void Open(Level level)
+			{
+			_Editor = new LevelEditor(level);
+			_Editor.RedrawNeeded += () => _Renderer?.Invalidate();
+			_Editor.ModeChanged += () => RebuildToolbar();
+
+			_Renderer.Editor = _Editor;
+			}
+		
 		protected override void OnLoadComplete(EventArgs e)
 			{
 			base.OnLoadComplete(e);
@@ -92,7 +116,7 @@ namespace MeshBesho.Ponger.Editor
 
 		private void SetMode(ToolType mode)
 			{
-			Editor.Mode = mode;
+			_Editor.Mode = mode;
 			}
 		}
 	}
