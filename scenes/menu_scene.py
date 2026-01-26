@@ -12,6 +12,7 @@ class menu_scene(scene.scene):
         #/scenes/menu_scene.py[class{"menu_scene"}(funtion{"__init__", paramaters{self}})]
         super().__init__(game)
         t = "Ts.png"
+        self.huds = []
         my_sprite = sprite(t)
         self.camera.reset()
         self.entities.add(my_sprite)

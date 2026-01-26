@@ -8,7 +8,7 @@ class level_scene(scene.scene):
     #/scenes/menu_scenes.py[class{"menu", inherit{scene}}]
     def __init__(self, level_num:int, game):
         super().__init__(game)
-
+        self.huds = []
         from level import level
         from entities.ball import ball
         from entities.hud import hud
@@ -16,7 +16,7 @@ class level_scene(scene.scene):
         #/scenes/menu_scene.py[class{menu}(funtion{"__init__", paramaters{self}})]
         
         self.hud = hud(self)
-        self.entities.add(self.hud)
+        self.huds.append(self.hud)
 
         self.level = level()
         self.level.load(f"levels/l{level_num}.ponger")

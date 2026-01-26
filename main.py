@@ -1,4 +1,3 @@
-
 import pyray as p
 from entities.ball import ball 
 from level import level
