@@ -21,6 +21,8 @@ class level_scene(scene.scene):
         self.level = level()
         self.level.load(f"levels/l{level_num}.ponger")
         self.entities.add(self.level)
+        self.mus = p.load_music_stream(self.level.song)
+        p.play_music_stream(self.mus)
         self.won = False
 
         my_ball = ball(self)
@@ -57,6 +59,7 @@ class level_scene(scene.scene):
 
     def update(self, dt):
         super().update(dt)
+        p.update_music_stream(self.mus)
 
         if p.is_key_down(p.KeyboardKey.KEY_UP):
             self.camera.move_by(0.0, -2.0)

@@ -11,7 +11,7 @@ class game:
 
     def run(self):
         while not p.window_should_close():
-            dt = p.get_frame_time() / 2.0
+            dt = p.get_frame_time()
             self.current_scene.update(dt)
             self.current_scene.draw()
 

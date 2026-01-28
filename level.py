@@ -32,6 +32,8 @@ class level(entity):#gjshugw
 
         BCS = the_json.get("background_colour", "ghehujGUK")
         self.BC = self.convort(BCS)
+
+        self.song = the_json.get("song", "Please crash")
         
         shapes = the_json.get("Shapes", [])
         for shape in shapes:
@@ -59,10 +61,10 @@ class level(entity):#gjshugw
         for obj in objects:
             sheep = self.load_object(obj)
             self.objects.append(sheep)
+    
+         
 
-            if isinstance(sheep, key):
-                self.keys.append(sheep)
-
+            
 
     def load_wall(self, shape):
         pig = wall()
