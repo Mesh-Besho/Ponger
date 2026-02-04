@@ -11,10 +11,36 @@ namespace MeshBesho.Ponger.Editor
 
 		private readonly Stack<PointF> _Points = new Stack<PointF>();
 
+		private Color _NewColor = Colors.Red;
+
 		public WallTool(LevelEditor editor) : base(editor)
 			{
 			}
+		
 		public override ToolType Type => ToolType.Wall;
+		
+		public override IEnumerable<ToolItem> GetToolbarItems() => [CreateColorDropDown() ];
+		
+		private DropDownToolItem CreateColorDropDown()
+			{
+			var Item = new DropDownToolItem { Text = "RED" };
+
+			foreach(var kvp in FormatHelper.KnownColors)
+				Item.Items.Add(new RadioMenuItem(new RadioCommand((s, e) =>
+					{
+						OnColorChosen(kvp.Value);
+						Item.Text = kvp.Key;
+					}), (RadioMenuItem)Item.Items.FirstOrDefault()) { Text = kvp.Key, Checked = kvp.Value == _NewColor });
+			
+			if(FormatHelper.KnownColorsReversed.TryGetValue(_NewColor, out var colorName))
+				Item.Text = colorName;
+				
+			return Item;
+			}
+		private void OnColorChosen(Color color)
+			{
+			_NewColor = color;
+			}
 
 		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
@@ -101,7 +127,7 @@ namespace MeshBesho.Ponger.Editor
 			{
 			var Wall = new Wall(_Points)
 				{
-				Color = new[] { Colors.Red, Colors.Blue, Colors.Yellow, Colors.Green, Colors.Pink }[new Random().Next(5)]
+				Color = _NewColor
 				};
 
 			Editor.Level.Walls.Add(Wall);

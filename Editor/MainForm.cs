@@ -75,7 +75,20 @@ namespace MeshBesho.Ponger.Editor
 
 		private void InvokeSave(Object? sender, EventArgs e)
 			{
-			throw new NotImplementedException();
+			using var Picker = new SaveFileDialog
+				{
+				Filters = { new FileFilter("Level files", "*.ponger") }
+				};
+
+			if (Picker.ShowDialog(this) == DialogResult.Cancel)
+				return;
+
+			Save(Picker.FileName, _Editor.Level);
+			}
+		
+		private void Save(String fileName, Level level)
+			{
+			File.WriteAllText(fileName, level.ToJson().ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
 			}
 
 		private void InvokeOpen(Object? sender, EventArgs e)
@@ -107,6 +120,8 @@ namespace MeshBesho.Ponger.Editor
 			_Editor.ModeChanged += () => RebuildToolbar();
 
 			_Renderer.Editor = _Editor;
+			
+			RebuildToolbar();
 			}
 		
 		protected override void OnLoadComplete(EventArgs e)

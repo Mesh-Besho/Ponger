@@ -22,7 +22,13 @@ namespace MeshBesho.Ponger.Editor
 		
 		private void InvokeDelete(Object? sender, EventArgs e)
 			{
-			throw new NotImplementedException();
+			if (Editor.SelectedEntity is Wall selectedWall)
+				{
+				Editor.Level.Walls.Remove(selectedWall);
+				Editor.SelectedEntity = null;
+				}
+
+			Editor.InvokeRedraw();
 			}
 
 		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
@@ -55,8 +61,14 @@ namespace MeshBesho.Ponger.Editor
 
 			if (MouseDownEntity is WallHitTestResult wallHit)
 				{
-				for (var index = 0; index < wallHit.Entity.Points.Count; index++)
-					wallHit.Entity.Points[index] += _LastDelta;
+				if (wallHit.PointIndex.HasValue)
+					wallHit.Entity.Points[wallHit.PointIndex.Value] += _LastDelta;
+
+				else
+					{
+					for (var index = 0; index < wallHit.Entity.Points.Count; index++)
+						wallHit.Entity.Points[index] += _LastDelta;
+					}
 				}
 			
 			Editor.InvokeRedraw();
@@ -71,16 +83,18 @@ namespace MeshBesho.Ponger.Editor
 
 			var Delta = point - _MouseDownPosition;
 
-			foreach (var line in _MoveWallOverlay.Lines)
+			if (MouseDownEntity is WallHitTestResult wallHit)
 				{
-				line.Start = line.Start - _LastDelta + Delta;
-				line.End = line.End - _LastDelta + Delta;
+				if (wallHit.PointIndex.HasValue)
+					_MoveWallOverlay.MovePoint(wallHit.PointIndex.Value, PointF.Empty - _LastDelta + Delta);	
+				
+				else
+					_MoveWallOverlay.Move(PointF.Empty - _LastDelta + Delta);
 				}
-			
+
 			_LastDelta = Delta;
 			
 			return true;
-
 			}
 		}
 	}

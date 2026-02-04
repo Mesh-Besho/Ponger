@@ -24,6 +24,21 @@ namespace MeshBesho.Ponger.Editor
 			return Door;
 			}
 		
+		public JsonNode? ToJson()
+			{
+			var Data = new JsonObject();
+
+			Data["hinge"] = FormatHelper.VertexToJson(Hinge);
+			
+			var WallsSection = new JsonArray();
+			Data["walls"] = WallsSection;
+			
+			foreach (var wall in Walls)
+				WallsSection.Add(wall.ToJson());
+
+			return Data;
+			}
+		
 		public void Render(Graphics graphics, RenderFlags flags)
 			{
 			foreach (var wall in Walls)

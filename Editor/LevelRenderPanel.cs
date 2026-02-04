@@ -73,6 +73,9 @@ namespace MeshBesho.Ponger.Editor
 		
 		protected override void OnMouseMove(MouseEventArgs e)
 			{
+			if(!e.Delta.IsZero)
+				throw new Exception("Mouse movement should be handled by the mouse wheel.");
+			
 			base.OnMouseMove(e);
 
 			var MouseScreenPosition = e.Location - _Center;
@@ -96,7 +99,7 @@ namespace MeshBesho.Ponger.Editor
 		protected override void OnMouseLeave(MouseEventArgs e)
 			{
 			base.OnMouseLeave(e);
-			
+
 			_MouseWorldPosition = null;
 			}
 

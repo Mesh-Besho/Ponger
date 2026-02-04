@@ -5,6 +5,8 @@ namespace MeshBesho.Ponger.Editor
 	{
 	internal class OverlayLine : IRenderable
 		{
+		public OverlayLine() { }
+
 		public OverlayLine(PointF start, PointF end)
 			{
 			Start = start;
@@ -17,6 +19,30 @@ namespace MeshBesho.Ponger.Editor
 		public void Render(Graphics graphics, RenderFlags flags)
 			{
 			graphics.DrawLine(Colors.Black, Start, End);
+			}
+		}
+
+	public class OverlayRectangle : IRenderable
+		{
+		public OverlayRectangle() { }
+		
+		public OverlayRectangle(PointF topLeft, PointF bottomRight)
+			{
+			Bounds = new RectangleF(topLeft, bottomRight - topLeft);	
+			}
+
+		public OverlayRectangle(PointF origin, SizeF size, Boolean center = false)
+			{
+			var NewBounds = new RectangleF(origin, size);
+			if (center) NewBounds.Center = origin;
+			Bounds = NewBounds;
+			}
+		
+		public RectangleF Bounds { get; set; }
+		
+		public void Render(Graphics graphics, RenderFlags flags)
+			{
+			graphics.DrawRectangle(Colors.Black, Bounds);
 			}
 		}
 
@@ -48,6 +74,24 @@ namespace MeshBesho.Ponger.Editor
 			{
 			foreach(var line in Lines)
 				line.Render(graphics, flags);
+			}
+		
+		public void Move(PointF delta)
+			{
+			foreach (var line in Lines)
+				{
+				line.Start = line.Start + delta;
+				line.End = line.End + delta;
+				}
+			}
+		
+		public void MovePoint(Int32 index, PointF delta)
+			{
+			var StartIndex = index;
+			var EndIndex = index == 0 ? Lines.Count - 1 : index - 1;
+			
+			Lines[StartIndex].Start += delta;
+			Lines[EndIndex].End += delta;
 			}
 		}
 	

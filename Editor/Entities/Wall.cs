@@ -135,6 +135,21 @@ namespace MeshBesho.Ponger.Editor.Ponger
 
 			return Wall;
 			}
+
+		public JsonObject ToJson()
+			{
+			var Data = new JsonObject();
+
+			Data["Color"] = FormatHelper.FormatColor(Color);
+			
+			var VerticesSection = new JsonArray();
+			Data["Vertices"] = VerticesSection;
+			
+			foreach (var point in Points)
+				VerticesSection.Add(FormatHelper.VertexToJson(point));
+
+			return Data;
+			}
 		
 		public Wall Clone()
 			{
@@ -143,9 +158,9 @@ namespace MeshBesho.Ponger.Editor.Ponger
 				Color = Color
 				};
 
-			foreach(var point in Points)
+			foreach (var point in Points)
 				Wall.Points.Add(point);
-			
+
 			return Wall;
 			}
 		}
