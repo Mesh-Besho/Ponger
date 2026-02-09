@@ -1,8 +1,11 @@
 #i@:
 import pyray as p
 
+from entities.door import door
 from level import level
+from player import player
 from scenes.level_scene import level_scene
+from scenes.scene import scene
 from wall import wall
 import chatgpt as bounce_code
 import controls
@@ -28,7 +31,8 @@ class ball(sprite):
         self.W = 10
         self.H = 10
         self.set_origin_center()
-        self.direction = p.Vector2(111, 110)
+        #self.direction = p.Vector2(111, 110)
+        self.direction = p.Vector2(111, 20)
         self.level = scene.level
         self.scene = scene
         self.can_teleport = True
@@ -101,13 +105,28 @@ class ball(sprite):
         circ = bounce_code.Circle(self.get_location(), CIRC_RADIUS)
         #circ
         #4/4
-        self.direction = bounce_code.update_circle(circ, self.direction, ls, dt, self.when_hit_something)
+        self.direction = bounce_code.update_circle(circ, self.direction, ls, dt, self.when_hit_blocker)
         self.set_location(circ.center)
 
-    def when_hit_something(self, new_position:p.Vector2):
+    def when_hit_blocker(self, new_position:p.Vector2, line:bounce_code.Line):
         boingy = text("Boing!", new_position.x, new_position.y, 12, p.RED)
         boingy.do_something_soon(text_boinger())
         self.scene.entities.add(boingy)
+
+        if line is not None:
+            if isinstance(line.owner, door):
+                self.hit_door(line.owner)
+
+    def hit_door(self, door:door):
+        if not door.locked is None:
+            key = self.scene.game.player.find_item(door.locked)
+            if key is None:
+                return
+            else:
+                door.locked = None
+                self.scene.game.player.lose_item(key)
+        door.do_event("on_left_click")
+        
 
     def apply_magnet(self, dt:float, range:float, power:float, position:p.Vector2, polarity:float):
         magnetism = self.calculate_magnetism(range, power, position, polarity)

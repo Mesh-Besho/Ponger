@@ -61,6 +61,8 @@ class level(entity):#gjshugw
         for obj in objects:
             sheep = self.load_object(obj)
             self.objects.append(sheep)
+            if isinstance(sheep, key):
+                self.keys.append(sheep)
     
          
 
@@ -98,6 +100,10 @@ class level(entity):#gjshugw
         for event_key in salmon:
             whale = salmon[event_key]
             cow.events[event_key] = whale
+        
+        
+
+        cow.locked = DooR.get("locked", None)
 
         return cow
    
@@ -106,6 +112,10 @@ class level(entity):#gjshugw
             return self.load_mover(DoeR)
         if DoeR["type"] == "door_spinner":
             return self.load_door_spinner(DoeR)
+        if DoeR["type"] == "door_wobbler":
+            return self.load_door_wobbler(DoeR)
+        else:
+            return "Please crash"
         #if DoeR[type] == "blabla"
         #   return self.load_blabla(ghu, yje, hdyt, gst)
     
@@ -122,6 +132,11 @@ class level(entity):#gjshugw
         speed = float(SpinneR["speed"])
         angle = float(SpinneR["angle"])
         jfy = door_spinner(angle, speed)
+        return jfy
+    
+    def load_door_wobbler(self, WobbleR):
+        from doers.door_wobbler import door_wobbler
+        jfy = door_wobbler()
         return jfy
     
     def load_vertex(self, vertex):
@@ -147,14 +162,15 @@ class level(entity):#gjshugw
     def load_key(self, KeY):
         pos = self.load_vertex(KeY["pos"])
         TEXTure = KeY["texture"]
-        key_id = KeY["obj_id"]
-        sheep = key(pos, TEXTure, key_id)
+        sheep = key(pos, TEXTure)
         return sheep
 
     def load_object(self, ObjecT):
+        key_id = ObjecT["obj_id"]
         type = ObjecT["type"]
         if type == "key":
             sheep = self.load_key(ObjecT)
+        sheep.obj_id = key_id
         return sheep
 
     def find_portal_by_name(self, name:str):

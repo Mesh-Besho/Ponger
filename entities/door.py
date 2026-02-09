@@ -5,6 +5,7 @@ import maths
 from entities.entity import entity
 from wall import wall
 import controls
+from player import player
 
 HINGE_CLICK_RADIUS = 10
 
@@ -13,6 +14,7 @@ class door(entity):
         super().__init__()
         self.surfaces = []
         self.colour = p.WHITE
+        self.locked = None
         #5 speeds in LPS
         self.VFS = 0.5
         self.FS = 0.25
@@ -36,7 +38,7 @@ class door(entity):
         #self.next_do.repeat = True
     
     def move_wall(self, x:wall):
-        donkey = wall()
+        donkey = wall(self)
         donkey.colour = x.colour
         
         for v in x.vertices:
@@ -44,6 +46,11 @@ class door(entity):
             donkey.vertices.append(new_v)
 
         return donkey
+    def please_open(self):
+        if self.locked is None:
+            self.do_event("on_open")
+        else:
+            self.do_event("on_failed_open")
     
     def update(self, dt):
         #self = door > position
@@ -54,14 +61,16 @@ class door(entity):
         c = self.get_location()
         r = HINGE_CLICK_RADIUS
         m = controls.good_mouse_position
-
+#
         if maths.is_in_circle(c, r, m):
+                    
             if p.is_mouse_button_pressed(p.MouseButton.MOUSE_BUTTON_LEFT):
-                self.do_event("on_left_click")
+                self.please_open()
 
             if p.is_mouse_button_pressed(p.MouseButton.MOUSE_BUTTON_RIGHT):
-                self.do_event("on_right_click")
-      
+                #self.do_event("on_right_click")
+                pass #For now, right click does nothing. Maybe later it can be used to close the door or something.
+    
         
 
 

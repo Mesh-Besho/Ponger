@@ -426,12 +426,16 @@
           "type": "door_spinner",
           "angle": -1.55,
           "speed": -1.0
+        },
+        "wobble": {
+          "type": "door_wobbler"
         }
       },
       "events": {
         "on_start": "close",
-        "on_left_click": "open",
-        "on_right_click": "close"
+        "on_open": "open",
+        "on_close": "close",
+        "on_failed_open": "wobble"
       }
     }
   ],

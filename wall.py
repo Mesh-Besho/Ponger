@@ -2,9 +2,10 @@ import pyray as p
 from entities.entity import entity
 import chatgpt as bounce_code
 class wall(entity):
-    def __init__(self):
+    def __init__(self, owner=None):
         self.vertices = []
         self.colour = p.BLACK
+        self.owner = owner
 
     
     #def become_a_rectangle(self):
@@ -22,7 +23,7 @@ class wall(entity):
             e = self.vertices[(x + 1) % len(self.vertices)]
 
             #bounce_code
-            l = bounce_code.Line(s, e)
+            l = bounce_code.Line(s, e, self.owner)
             ls.append(l)
         
         return ls

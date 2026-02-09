@@ -13,9 +13,10 @@ class Circle:
 
 
 class Line:
-    def __init__(self, a: pyray.Vector2, b: pyray.Vector2):
+    def __init__(self, a: pyray.Vector2, b: pyray.Vector2, owner=None):
         self.a = a
         self.b = b
+        self.owner = owner
 
 
 def clamp01(x: float) -> float:
@@ -74,6 +75,7 @@ def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt
 
         move = pyray.vector2_scale(velocity, remaining)
         earliest_t = 1.0 + 1e-9
+        earliest_line = None
         hit_candidates = []
 
         for wall in walls:
@@ -108,6 +110,7 @@ def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt
 
                         if tt < earliest_t - 1e-9:
                             earliest_t = tt
+                            earliest_line = wall
                             hit_candidates = [(normal, C)]
                         elif abs(tt - earliest_t) <= 1e-6:
                             hit_candidates.append((normal, C))
@@ -126,6 +129,7 @@ def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt
 
                 if tt < earliest_t - 1e-9:
                     earliest_t = tt
+                    earliest_line = wall
                     hit_candidates = [(normal, C)]
                 elif abs(tt - earliest_t) <= 1e-6:
                     hit_candidates.append((normal, C))
@@ -139,7 +143,7 @@ def update_circle(circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt
         circle.center = pyray.vector2_add(circle.center, pyray.vector2_scale(move, earliest_t))
 
         if collision_callback is not None:
-            collision_callback(circle.center)
+            collision_callback(circle.center, earliest_line)
 
         # --- Combine normals (for corners) ---
         combined = pyray.Vector2(0.0, 0.0)
