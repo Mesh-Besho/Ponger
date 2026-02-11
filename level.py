@@ -6,11 +6,12 @@ from entities.key import key
 from wall import wall
 from entities.door import door
 from winzone import winzone
+from portal import portal
+from entities.mouse_magnet_powerup import mouse_magnet_powerup
 
 #from doers.blabla import blabla
 
 from entities.entity import entity
-from portal import portal
 
 
 class level(entity):#gjshugw
@@ -168,9 +169,17 @@ class level(entity):#gjshugw
     def load_object(self, ObjecT):
         key_id = ObjecT["obj_id"]
         type = ObjecT["type"]
-        if type == "key":
+        if type == "Key":
             sheep = self.load_key(ObjecT)
+        if type == "MouseMagnetPowerup":
+            sheep = self.load_mouse_magnet_powerup(ObjecT)
         sheep.obj_id = key_id
+
+        return sheep
+    
+    def load_mouse_magnet_powerup(self, ObjecT):
+        pos = self.load_vertex(ObjecT["pos"])
+        sheep = mouse_magnet_powerup(pos)
         return sheep
 
     def find_portal_by_name(self, name:str):

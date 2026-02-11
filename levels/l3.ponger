@@ -1,0 +1,277 @@
+{
+  "Shapes": [
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 20,
+          "Y": 40
+        },
+        {
+          "X": 90,
+          "Y": 40
+        },
+        {
+          "X": 90,
+          "Y": 10
+        },
+        {
+          "X": 20,
+          "Y": 10
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 120,
+          "Y": 50
+        },
+        {
+          "X": 150,
+          "Y": 10
+        },
+        {
+          "X": 80,
+          "Y": 10
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 130,
+          "Y": 40
+        },
+        {
+          "X": 400,
+          "Y": 40
+        },
+        {
+          "X": 400,
+          "Y": 30
+        },
+        {
+          "X": 130,
+          "Y": 30
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 340,
+          "Y": 100
+        },
+        {
+          "X": 400,
+          "Y": 160
+        },
+        {
+          "X": 400,
+          "Y": 40
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 370,
+          "Y": 130
+        },
+        {
+          "X": 370,
+          "Y": 260
+        },
+        {
+          "X": 390,
+          "Y": 260
+        },
+        {
+          "X": 390,
+          "Y": 130
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 270,
+          "Y": 260
+        },
+        {
+          "X": 370,
+          "Y": 260
+        },
+        {
+          "X": 370,
+          "Y": 170
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 300,
+          "Y": 230
+        },
+        {
+          "X": 90,
+          "Y": 230
+        },
+        {
+          "X": 90,
+          "Y": 240
+        },
+        {
+          "X": 300,
+          "Y": 240
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 90,
+          "Y": 240
+        },
+        {
+          "X": 50,
+          "Y": 200
+        },
+        {
+          "X": 60,
+          "Y": 200
+        },
+        {
+          "X": 90,
+          "Y": 230
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 0,
+          "Y": 200
+        },
+        {
+          "X": 0,
+          "Y": 120
+        },
+        {
+          "X": 60,
+          "Y": 120
+        },
+        {
+          "X": 60,
+          "Y": 200
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 30,
+          "Y": 120
+        },
+        {
+          "X": 90,
+          "Y": 40
+        },
+        {
+          "X": 80,
+          "Y": 40
+        },
+        {
+          "X": 20,
+          "Y": 120
+        }
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "hinge": {
+        "X": 340,
+        "Y": 100
+      },
+      "walls": [
+        {
+          "Color": "BLACK",
+          "Vertices": [
+            {
+              "X": -1,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": 0
+            },
+            {
+              "X": 1,
+              "Y": -40
+            },
+            {
+              "X": -1,
+              "Y": -40
+            }
+          ]
+        }
+      ],
+      "locked": "key1",
+      "doers": {
+        "open": {
+          "type": "door_spinner",
+          "angle": 1.55,
+          "speed": 1.0
+        },
+        "close": {
+          "type": "door_spinner",
+          "angle": -1.55,
+          "speed": -1.0
+        },
+        "wobble": {
+          "type": "door_wobbler"
+        }
+      },
+      "events": {
+        "on_start": "close",
+        "on_open": "open",
+        "on_close": "close",
+        "on_failed_open": "wobble"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "texture": "MouseMagnetPowerup.png",
+      "color": "WHITE",
+      "type": "MouseMagnetPowerup",
+      "pos": {
+        "X": 370,
+        "Y": 60
+      },
+      "obj_id": "MouseMagnetPowerup1"
+    },
+    {
+      "texture": "house_key.png",
+      "color": "GOLD",
+      "type": "Key",
+      "pos": {
+        "X": 150                                                                                ,
+        "Y": 80
+      },
+      "obj_id": "key1"
+    }
+  ]
+}

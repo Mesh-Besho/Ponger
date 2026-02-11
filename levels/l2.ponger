@@ -464,7 +464,7 @@
     }
   
   ],
-  "*winzones": [
+  "winzones": [
     {
       "TLC": {
         "X": 470,
