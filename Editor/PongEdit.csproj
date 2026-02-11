@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFrameworks>net9.0;net9.0-windows</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UseWpf Condition="'$(TargetFramework)' == 'net9.0-windows'">true</UseWpf>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Eto.Forms" Version="2.10.2"/>
+        <PackageReference Include="Eto.Forms.Controls.SkiaSharp" Version="1.0.0"/>
+        <PackageReference Include="Eto.Forms.Controls.SkiaSharp.GTK" Version="1.0.0"/>
+        <PackageReference Include="Eto.Platform.Gtk" Version="2.10.2"/>
+        <PackageReference Include="Eto.Platform.Wpf" Version="2.10.2" Condition="'$(TargetFramework)' == 'net9.0-windows'" />
+    </ItemGroup>
+
+</Project>
