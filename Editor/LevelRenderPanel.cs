@@ -6,7 +6,6 @@ namespace MeshBesho.Ponger.Editor
 	internal class LevelRenderPanel : Drawable
 		{
 		public LevelEditor Editor { get; set; }
-		public SizeF GridSize { get; set; } = new SizeF(25, 25);
 
 		private PointF _Center;
 		private PointF? _MouseWorldPosition;
@@ -132,9 +131,13 @@ namespace MeshBesho.Ponger.Editor
 			e.Graphics.TranslateTransform(_Center);
 			e.Graphics.MultiplyTransform(_ActiveCamera.GetMatrix());
 
-			DrawGrid(e.Graphics);
+			if (Program.Settings.Grid.Enabled && !Program.Settings.Grid.OnTop)
+				DrawGrid(e.Graphics);
 			
 			Editor.Render(e.Graphics);
+
+			if (Program.Settings.Grid.Enabled && Program.Settings.Grid.OnTop)
+				DrawGrid(e.Graphics);
 			
 			e.Graphics.RestoreTransform();
 
@@ -144,15 +147,16 @@ namespace MeshBesho.Ponger.Editor
 		
 		private void DrawGrid(Graphics graphics)
 			{
+			var GridSize = new Size(Program.Settings.Grid.Size, Program.Settings.Grid.Size);
 			var VisibleBounds = _ActiveCamera.TransformInverse(new RectangleF(-_Center.X, -_Center.Y, Size.Width, Size.Height));
 
-			var pen = Pens.LightGrey;
+			var Pen = Pens.LightGrey;
 
 			for (var x = VisibleBounds.Left - (VisibleBounds.Left % GridSize.Width); x <= VisibleBounds.Right; x += GridSize.Width)
-				graphics.DrawLine(pen, x, VisibleBounds.Top, x, VisibleBounds.Bottom);
+				graphics.DrawLine(Pen, x, VisibleBounds.Top, x, VisibleBounds.Bottom);
 
 			for (var y = VisibleBounds.Top - (VisibleBounds.Top % GridSize.Height); y <= VisibleBounds.Bottom; y += GridSize.Height)
-				graphics.DrawLine(pen, VisibleBounds.Left, y, VisibleBounds.Right, y);
+				graphics.DrawLine(Pen, VisibleBounds.Left, y, VisibleBounds.Right, y);
 			}
 		}
 	}

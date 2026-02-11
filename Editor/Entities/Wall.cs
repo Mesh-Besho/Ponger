@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
 using Eto.Drawing;
 
-namespace MeshBesho.Ponger.Editor.Ponger
+namespace MeshBesho.Ponger.Editor
 	{
 	public class Wall : EditorEntity, IRenderable
 		{
@@ -64,15 +64,15 @@ namespace MeshBesho.Ponger.Editor.Ponger
 			if ((UInt32)pointIndex >= (UInt32)Points.Count)
 				return false;
 
-			var wallPoint = Points[pointIndex];
+			var WallPoint = Points[pointIndex];
 
-			const Single radius = 10f;
-			const Single radiusSquared = radius * radius;
+			const Single Radius = 10f;
+			const Single RadiusSquared = Radius * Radius;
 
-			var dx = testPoint.X - wallPoint.X;
-			var dy = testPoint.Y - wallPoint.Y;
+			var Dx = testPoint.X - WallPoint.X;
+			var Dy = testPoint.Y - WallPoint.Y;
 
-			if ((dx * dx) + (dy * dy) <= radiusSquared)
+			if ((Dx * Dx) + (Dy * Dy) <= RadiusSquared)
 				{
 				result = new WallHitTestResult(this, pointIndex);
 				return true;
@@ -90,29 +90,29 @@ namespace MeshBesho.Ponger.Editor.Ponger
 				return false;
 
 			// Quick reject using bounding rectangle
-			var bounds = GetBoundingRectangle();
-			if (!bounds.Contains(point))
+			var Bounds = GetBoundingRectangle();
+			if (!Bounds.Contains(point))
 				return false;
 
 			// Ray-casting point-in-polygon test (even/odd rule).
 			// Treats Points as the polygon vertices; the polygon is implicitly closed.
-			var inside = false;
+			var Inside = false;
 
-			for (Int32 i = 0, j = Points.Count - 1; i < Points.Count; j = i++)
+			for (Int32 I = 0, J = Points.Count - 1; I < Points.Count; J = I++)
 				{
-				var pi = Points[i];
-				var pj = Points[j];
+				var Pi = Points[I];
+				var Pj = Points[J];
 
 				// Check whether the horizontal ray to the right from 'point' crosses edge (pj -> pi)
-				var intersects =
-					((pi.Y > point.Y) != (pj.Y > point.Y)) &&
-					(point.X < (pj.X - pi.X) * (point.Y - pi.Y) / (pj.Y - pi.Y) + pi.X);
+				var Intersects =
+					((Pi.Y > point.Y) != (Pj.Y > point.Y)) &&
+					(point.X < (Pj.X - Pi.X) * (point.Y - Pi.Y) / (Pj.Y - Pi.Y) + Pi.X);
 
-				if (intersects)
-					inside = !inside;
+				if (Intersects)
+					Inside = !Inside;
 				}
 
-			if (inside)
+			if (Inside)
 				{
 				result = new WallHitTestResult(this);
 				return true;

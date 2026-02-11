@@ -1,5 +1,5 @@
 using Eto.Drawing;
-using MeshBesho.Ponger.Editor.Ponger;
+using MeshBesho.Ponger.Editor;
 
 namespace MeshBesho.Ponger.Editor
 	{

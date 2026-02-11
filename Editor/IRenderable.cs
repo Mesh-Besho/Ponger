@@ -1,6 +1,6 @@
 using Eto.Drawing;
 
-namespace MeshBesho.Ponger.Editor.Ponger
+namespace MeshBesho.Ponger.Editor
 	{
 	public interface IRenderable
 		{

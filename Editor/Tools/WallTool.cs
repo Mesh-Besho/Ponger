@@ -1,6 +1,6 @@
 using Eto.Drawing;
 using Eto.Forms;
-using MeshBesho.Ponger.Editor.Ponger;
+using MeshBesho.Ponger.Editor;
 
 namespace MeshBesho.Ponger.Editor
 	{

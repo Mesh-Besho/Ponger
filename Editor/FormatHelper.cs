@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using Eto.Drawing;
 
-namespace MeshBesho.Ponger.Editor.Ponger
+namespace MeshBesho.Ponger.Editor
 	{
 	public static class FormatHelper
 		{
@@ -18,16 +18,16 @@ namespace MeshBesho.Ponger.Editor.Ponger
 
 		public static Color ParseColor(String value)
 			{
-			if (KnownColors.TryGetValue(value, out var color))
-				return color;
+			if (KnownColors.TryGetValue(value, out var Color))
+				return Color;
 			
 			return Colors.Lime;
 			}
 		
 		public static String FormatColor(Color color)
 			{
-			if (KnownColorsReversed.TryGetValue(color, out var name))
-				return name;
+			if (KnownColorsReversed.TryGetValue(color, out var Name))
+				return Name;
 			
 			return "SAUSAGEBISCUITS";
 			}

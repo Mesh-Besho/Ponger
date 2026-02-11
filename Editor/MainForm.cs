@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Eto.Drawing;
 using Eto.Forms;
+using MeshBesho.Ponger.Editor.Settings;
 
 namespace MeshBesho.Ponger.Editor
 	{
@@ -41,6 +42,16 @@ namespace MeshBesho.Ponger.Editor
 						{
 						Text = "File",
 						Items = { OpenCommand, SaveCommand }
+						},
+					new ButtonMenuItem
+						{
+						Text = "Tools",
+						Items = { new ButtonMenuItem((s, e) => new SettingsDialog().ShowModal(this)) { Text = "Settings" } }
+						},
+					new ButtonMenuItem
+						{
+						Text = "Help",
+						Items = { new ButtonMenuItem((s, e) => new AboutDialog().ShowModal(this)) { Text = "About" } }
 						}
 					}
 				};

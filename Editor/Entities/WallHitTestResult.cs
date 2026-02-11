@@ -1,4 +1,4 @@
-﻿namespace MeshBesho.Ponger.Editor.Ponger
+﻿namespace MeshBesho.Ponger.Editor
 	{
 	public class WallHitTestResult : HitTestResult
 		{
