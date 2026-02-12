@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Eto.Drawing;
@@ -48,7 +49,12 @@ namespace MeshBesho.Ponger.Editor
 					new ButtonMenuItem
 						{
 						Text = "Tools",
-						Items = { new ButtonMenuItem((s, e) => new SettingsDialog().ShowModal(this)) { Text = "Settings" } }
+						Items =
+							{
+							new ButtonMenuItem((s, e) => InvokeCheck()) { Text = "Check" },
+							new SeparatorMenuItem(),
+							new ButtonMenuItem((s, e) => new SettingsDialog().ShowModal(this)) { Text = "Settings" }
+							}
 						},
 					new ButtonMenuItem
 						{
@@ -136,12 +142,25 @@ namespace MeshBesho.Ponger.Editor
 			
 			RebuildToolbar();
 			}
-		
-		protected override void OnLoadComplete(EventArgs e)
-			{
-			base.OnLoadComplete(e);
-			}
 
+		private void InvokeCheck()
+			{
+			var Results = _Editor.Level.Validate(true).ToArray();
+
+			if (!Results.Any())
+				{
+				MessageBox.Show(this, "No problems detected", MessageBoxType.Information);
+				return;
+				}
+
+			var Builder = new StringBuilder();
+
+			foreach (var problem in Results)
+				Builder.AppendLine(problem.Message + " " + (problem.Fixed ? "✔ Fixed!" : "✘ YOU FIX IT!"));
+			
+			MessageBox.Show(this, Builder.ToString(), MessageBoxType.Warning);
+			}
+		
 		private void SetMode(ToolType mode)
 			{
 			_Editor.Mode = mode;

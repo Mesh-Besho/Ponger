@@ -163,5 +163,34 @@ namespace MeshBesho.Ponger.Editor
 
 			return Wall;
 			}
+		
+		public IEnumerable<ValidationProblem> Validate(Boolean fix)
+			{
+			// Need at least a triangle for winding to be meaningful.
+			if (Points.Count < 3)
+				return Enumerable.Empty<ValidationProblem>();
+
+			// Shoelace formula (signed area). In a standard Cartesian coordinate system:
+			//  - area > 0 => counter-clockwise
+			//  - area < 0 => clockwise
+			Double SignedArea2 = 0;
+
+			for (Int32 i = 0, j = Points.Count - 1; i < Points.Count; j = i++)
+				{
+				var pj = Points[j];
+				var pi = Points[i];
+				SignedArea2 += (pj.X * pi.Y) - (pi.X * pj.Y);
+				}
+
+			var IsClockwise = SignedArea2 < 0;
+
+			if (IsClockwise)
+				return Enumerable.Empty<ValidationProblem>();
+
+			if (fix)
+				Points.Reverse();
+
+			return [new ValidationProblem("Wall has wrong winding order", fix)];
+			}
 		}
 	}

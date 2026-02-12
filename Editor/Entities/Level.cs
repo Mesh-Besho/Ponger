@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Eto.Drawing;
@@ -69,6 +70,30 @@ namespace MeshBesho.Ponger.Editor
 				DoorsSection.Add(door.ToJson());
 			
 			return Data;
+			}
+
+		public IEnumerable<ValidationProblem> Validate(Boolean fix)
+			{
+			var UselessWalls = new List<Wall>();
+
+			foreach (var wall in Walls)
+				{
+				var WallBounds = wall.GetBoundingRectangle();
+
+				if (WallBounds.Width == 0 || WallBounds.Height == 0)
+					{
+					UselessWalls.Add(wall);
+					yield return new ValidationProblem("Wall is flat, should be removed", fix);
+
+					continue;
+					}
+
+				foreach (var problem in wall.Validate(fix))
+					yield return problem;
+				}
+
+			foreach (var wall in UselessWalls)
+				Walls.Remove(wall);
 			}
 		}
 	}
