@@ -92,6 +92,9 @@ namespace MeshBesho.Ponger.Editor
 
 			if (type == ToolType.Portal)
 				return new PortalTool(this);
+
+			if (type == ToolType.Object)
+				return new ObjectTool(this);
 			
 			throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown tool type");
 			}

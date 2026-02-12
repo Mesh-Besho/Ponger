@@ -1,4 +1,5 @@
-﻿using Eto.Forms;
+﻿using Eto.Drawing;
+using Eto.Forms;
 
 namespace MeshBesho.Ponger.Editor
 	{
@@ -39,6 +40,8 @@ namespace MeshBesho.Ponger.Editor
 					}
 				};
 
+			Padding = new Padding(8);
+			
 			PositiveButtons.Add(DefaultButton = new Button((s, e) => Close(DialogResult.Ok)) { Text = "OK" });
 			NegativeButtons.Add(AbortButton = new Button((s, e) => Close(DialogResult.Cancel)) { Text = "Cancel" });
 			}

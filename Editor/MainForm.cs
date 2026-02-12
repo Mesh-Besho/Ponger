@@ -28,7 +28,7 @@ namespace MeshBesho.Ponger.Editor
 			OpenCommand = new Command(InvokeOpen) { MenuText = "Open" };
 			SaveCommand = new Command(InvokeSave) { MenuText = "Save" };
 
-			var Modes = new[] { ToolType.Mouse, ToolType.Wall, ToolType.Portal, ToolType.WinZone };
+			var Modes = new[] { ToolType.Mouse, ToolType.Wall, ToolType.Portal, ToolType.Object, ToolType.WinZone };
 
 			var ModeCommands = new RadioCommand[Modes.Length];
 			_ToolToolItems = new ToolItem[Modes.Length];

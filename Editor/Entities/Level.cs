@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Eto.Drawing;
-using MeshBesho.Ponger.Editor;
 
 namespace MeshBesho.Ponger.Editor
 	{
@@ -11,6 +8,7 @@ namespace MeshBesho.Ponger.Editor
 		public List<Wall> Walls { get; } = new List<Wall>();
 		public List<Door> Doors { get; } = new List<Door>();
 		public List<Portal> Portals { get; } = new List<Portal>();
+		public List<Pobject> Objects { get; } = new List<Pobject>();
 		public List<WinZone> WinZones { get; } = new List<WinZone>();
 
 		public IEnumerable<IRenderable> GetRenderables()
@@ -24,6 +22,9 @@ namespace MeshBesho.Ponger.Editor
 			foreach (var portal in Portals)
 				yield return portal;
 			
+			foreach (var pobject in Objects)
+				yield return pobject;
+
 			foreach (var winZone in WinZones)
 				yield return winZone;
 			}
@@ -44,6 +45,10 @@ namespace MeshBesho.Ponger.Editor
 			
 			foreach (var portal in Portals)
 				if (portal.HitTest(point, out result))
+					return true;
+			
+			foreach (var pobject in Objects)
+				if (pobject.HitTest(point, out result))
 					return true;
 
 			result = HitTestResult.None;
@@ -71,6 +76,12 @@ namespace MeshBesho.Ponger.Editor
 			if (PortalsSection != null)
 				foreach (var portalElement in PortalsSection)
 					Level.Portals.Add(Portal.FromJson(portalElement.AsObject(), Loader));
+			
+			var ObjectsSection = json["objects"] as JsonArray;
+
+			if (ObjectsSection != null)
+				foreach (var objectElement in ObjectsSection)
+					Level.Objects.Add(Pobject.FromJson(objectElement.AsObject()));
 			
 			var WinZonesSection = json["winzones"] as JsonArray;
 
@@ -104,6 +115,12 @@ namespace MeshBesho.Ponger.Editor
 
 			foreach (var portal in Portals)
 				PortalsSection.Add(portal.ToJson());
+			
+			var ObjectsSection = new JsonArray();
+			Data["objects"] = ObjectsSection;
+
+			foreach (var pobject in Objects)
+				ObjectsSection.Add(pobject.ToJson());
 			
 			var WinZonesSection = new JsonArray();
 			Data["winzones"] = WinZonesSection;

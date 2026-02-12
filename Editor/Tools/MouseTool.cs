@@ -45,6 +45,12 @@ namespace MeshBesho.Ponger.Editor
 				Editor.SelectedEntity = null;
 				}
 			
+			else if (Editor.SelectedEntity is Pobject selectedObject)
+				{
+				Editor.Level.Objects.Remove(selectedObject);
+				Editor.SelectedEntity = null;
+				}
+			
 			else if (Editor.SelectedEntity is WinZone selectedWinZone)
 				{
 				Editor.Level.WinZones.Remove(selectedWinZone);
@@ -88,6 +94,12 @@ namespace MeshBesho.Ponger.Editor
 			else if (hit.Entity is Portal portal)
 				{
 				_MoveObjectOverlay = new OverlayRectangle(portal.GetBoundingRectangle());
+				Editor.AddOverlay(_MoveObjectOverlay);
+				}
+			
+			else if (hit.Entity is Pobject pobject)
+				{
+				_MoveObjectOverlay = new OverlayRectangle(pobject.GetBoundingRectangle());
 				Editor.AddOverlay(_MoveObjectOverlay);
 				}
 			
@@ -141,6 +153,13 @@ namespace MeshBesho.Ponger.Editor
 				portal.Position += _LastDelta;
 				}
 
+			else if (MouseDownEntity?.Entity is Pobject pobject)
+				{
+				Editor.RemoveOverlay(_MoveObjectOverlay);
+
+				pobject.Position += _LastDelta;
+				}
+			
 			else
 				return false;
 			
@@ -182,6 +201,11 @@ namespace MeshBesho.Ponger.Editor
 				}
 			
 			else if (MouseDownEntity?.Entity is Portal portal)
+				{
+				_MoveObjectOverlay.Move(PointF.Empty - _LastDelta + Delta);
+				}
+			
+			else if (MouseDownEntity?.Entity is Pobject pobject)
 				{
 				_MoveObjectOverlay.Move(PointF.Empty - _LastDelta + Delta);
 				}

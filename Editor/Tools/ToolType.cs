@@ -5,6 +5,7 @@ namespace MeshBesho.Ponger.Editor
 		Mouse,
 		Wall,
 		WinZone,
+		Object,
 		Portal,
 		}
 	}

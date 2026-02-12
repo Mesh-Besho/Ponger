@@ -254,7 +254,7 @@
   ],
   "objects": [
     {
-      "texture": "MouseMagnetPowerup.png",
+      "texture": "mouse_magnet_powerup.png",
       "color": "WHITE",
       "type": "MouseMagnetPowerup",
       "pos": {
