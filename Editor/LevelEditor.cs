@@ -62,7 +62,7 @@ namespace MeshBesho.Ponger.Editor
 		private void OnModeChanged(ToolType value)
 			{
 			// Reset whatever the old tool was doing
-			Tool?.Reset();
+			Tool?.OnDeactivated();
 
 			if (!_Tools.TryGetValue(value, out var tool))
 				{
@@ -70,10 +70,8 @@ namespace MeshBesho.Ponger.Editor
 				_Tools.Add(value, tool);
 				}
 
-			else
-				tool.Reset();
-
 			Tool = tool;
+			Tool.OnActivated();
 
 			ModeChanged?.Invoke();
 			}
@@ -142,5 +140,17 @@ namespace MeshBesho.Ponger.Editor
 			}
 
 		public Boolean HitTest(PointF point, out HitTestResult result) => Level.HitTest(point, out result);
+
+		public PointF Snap(PointF point)
+			{
+			if (Keyboard.Modifiers.HasFlag(Keys.Control))
+				return point;
+			
+			var Whole = Program.Settings.Grid.Size;
+			var Half = Whole / 2f;
+			var Fake = new PointF(point.X + (point.X > 0 ? Half : -Half), point.Y + (point.Y > 0 ? Half : -Half));
+			var Snapped = new PointF(Fake.X - (Fake.X % Whole), Fake.Y - (Fake.Y % Whole));
+			return Snapped;
+			}
 		}
 	}

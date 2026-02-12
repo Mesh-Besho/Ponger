@@ -6,6 +6,7 @@ namespace MeshBesho.Ponger.Editor
 	{
 	internal class WallTool : BaseTool
 		{
+		private OverlayRectangle _PointOverlay;
 		private OverlayLine _CurrentOverlay;
 		private readonly Stack<OverlayLine> _Overlays = new Stack<OverlayLine>();
 
@@ -13,8 +14,10 @@ namespace MeshBesho.Ponger.Editor
 
 		private Color _NewColor = Colors.Red;
 
-		public WallTool(LevelEditor editor) : base(editor)
+		public WallTool(LevelEditor editor) 
+			: base(editor)
 			{
+			_PointOverlay = new OverlayRectangle(PointF.Empty, new SizeF(4, 4));
 			}
 		
 		public override ToolType Type => ToolType.Wall;
@@ -25,26 +28,44 @@ namespace MeshBesho.Ponger.Editor
 			{
 			var Item = new DropDownToolItem { Text = "RED" };
 
-			foreach(var kvp in FormatHelper.KnownColors)
+			foreach (var kvp in FormatHelper.KnownColors)
 				Item.Items.Add(new RadioMenuItem(new RadioCommand((s, e) =>
 					{
-						OnColorChosen(kvp.Value);
-						Item.Text = kvp.Key;
+					OnColorChosen(kvp.Value);
+					Item.Text = kvp.Key;
 					}), (RadioMenuItem)Item.Items.FirstOrDefault()) { Text = kvp.Key, Checked = kvp.Value == _NewColor });
-			
-			if(FormatHelper.KnownColorsReversed.TryGetValue(_NewColor, out var colorName))
+	
+			if (FormatHelper.KnownColorsReversed.TryGetValue(_NewColor, out var colorName))
 				Item.Text = colorName;
-				
+
 			return Item;
 			}
+		
 		private void OnColorChosen(Color color)
 			{
 			_NewColor = color;
 			}
 
+		public override void OnActivated()
+			{
+			Editor.AddOverlay(_PointOverlay);
+			}
+		
+		public override void OnDeactivated()
+			{
+			Editor.RemoveOverlay(_PointOverlay);
+			Reset();
+			}
+		
+		private void Reset()
+			{
+			ClearOverlays();
+			_Points.Clear();
+			}
+
 		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
-			point = Snap(point);
+			point = Editor.Snap(point);
 
 			if (button == MouseButtons.Primary)
 				{
@@ -67,9 +88,12 @@ namespace MeshBesho.Ponger.Editor
 
 		public override Boolean InvokeMouseMove(MouseButtons button, PointF point)
 			{
+			point = Editor.Snap(point);
+
+			_PointOverlay.MoveCenter(point);
+			
 			if (_CurrentOverlay != null)
 				{
-				point = Snap(point);
 				_CurrentOverlay.End = point;
 				Editor.InvokeRedraw();
 				
@@ -79,12 +103,6 @@ namespace MeshBesho.Ponger.Editor
 			return false;
 			}
 		
-		public override void Reset()
-			{
-			ClearOverlays();
-			_Points.Clear();
-			}
-
 		private void CommitPoint(PointF point)
 			{
 			if (_Points.Count > 0)
@@ -120,8 +138,6 @@ namespace MeshBesho.Ponger.Editor
 			_Points.Pop();
 			_CurrentOverlay = _Overlays.Pop();
 			}
-		
-		private PointF Snap(PointF point) => new PointF((Int32)(point.X / 50) * 50, (Int32)(point.Y / 50) * 50);
 
 		private void OnWallComplete()
 			{

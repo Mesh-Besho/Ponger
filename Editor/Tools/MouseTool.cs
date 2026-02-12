@@ -1,6 +1,5 @@
 using Eto.Drawing;
 using Eto.Forms;
-using MeshBesho.Ponger.Editor;
 
 namespace MeshBesho.Ponger.Editor
 	{
@@ -33,23 +32,23 @@ namespace MeshBesho.Ponger.Editor
 
 		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
-			if (button == MouseButtons.Primary)
-				{
-				_MouseDownPosition = point;
-				_LastDelta = PointF.Empty;
-				MouseDownEntity = Editor.HitTest(point, out var hit) ? hit : null;
-				Editor.SelectedEntity = MouseDownEntity?.Entity;
+			point = Editor.Snap(point);
 
-				if (hit is WallHitTestResult wallHit)
-					{
-					_MoveWallOverlay = OverlayPolygon.FromWall(wallHit.Entity);
-					Editor.AddOverlay(_MoveWallOverlay);
-					}
-				
-				return true;
+			if (button != MouseButtons.Primary)
+				return false;
+
+			_MouseDownPosition = point;
+			_LastDelta = PointF.Empty;
+			MouseDownEntity = Editor.HitTest(point, out var hit) ? hit : null;
+			Editor.SelectedEntity = MouseDownEntity?.Entity;
+
+			if (hit is WallHitTestResult wallHit)
+				{
+				_MoveWallOverlay = OverlayPolygon.FromWall(wallHit.Entity);
+				Editor.AddOverlay(_MoveWallOverlay);
 				}
-			
-			return false;
+
+			return true;
 			}
 
 		public override Boolean InvokeMouseUp(MouseButtons button, PointF point)
@@ -57,8 +56,11 @@ namespace MeshBesho.Ponger.Editor
 			if (_MoveWallOverlay == null)
 				return false;
 			
+			if (button != MouseButtons.Primary)
+				return false;
+			
 			Editor.RemoveOverlay(_MoveWallOverlay);
-
+			
 			if (MouseDownEntity is WallHitTestResult wallHit)
 				{
 				if (wallHit.PointIndex.HasValue)
@@ -81,6 +83,8 @@ namespace MeshBesho.Ponger.Editor
 			if (MouseDownEntity == null)
 				return false;
 
+			point = Editor.Snap(point);
+			
 			var Delta = point - _MouseDownPosition;
 
 			if (MouseDownEntity is WallHitTestResult wallHit)

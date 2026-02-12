@@ -44,6 +44,15 @@ namespace MeshBesho.Ponger.Editor
 			{
 			graphics.DrawRectangle(Colors.Black, Bounds);
 			}
+		
+		/// <summary>
+		/// Move the overlay so that the center of the rectangle is at the given point.
+		/// </summary>
+		public void MoveCenter(PointF point)
+			{
+			var Delta = point - Bounds.Center;
+			Bounds += Delta;
+			}
 		}
 
 	internal class OverlayPolygon : IRenderable

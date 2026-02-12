@@ -22,6 +22,8 @@ namespace MeshBesho.Ponger.Editor
 		
 		public MainForm()
 			{
+			Title = "PongEdit";
+			
 			OpenCommand = new Command(InvokeOpen) { MenuText = "Open" };
 			SaveCommand = new Command(InvokeSave) { MenuText = "Save" };
 

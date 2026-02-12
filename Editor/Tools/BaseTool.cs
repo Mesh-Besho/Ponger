@@ -18,7 +18,9 @@ namespace MeshBesho.Ponger.Editor
 
 		public virtual Boolean InvokeMouseMove(MouseButtons button, PointF point) => false;
 
-		public virtual void Reset() { }
+		public virtual void OnActivated() { }
+		
+		public virtual void OnDeactivated() { }
 
 		public virtual IEnumerable<ToolItem> GetToolbarItems() => Enumerable.Empty<ToolItem>();
 		}

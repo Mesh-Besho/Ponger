@@ -157,6 +157,9 @@ namespace MeshBesho.Ponger.Editor
 
 			for (var y = VisibleBounds.Top - (VisibleBounds.Top % GridSize.Height); y <= VisibleBounds.Bottom; y += GridSize.Height)
 				graphics.DrawLine(Pen, VisibleBounds.Left, y, VisibleBounds.Right, y);
+			
+			graphics.DrawLine(Pens.Black, -GridSize.Width, 0, GridSize.Width, 0);
+			graphics.DrawLine(Pens.Black, 0, -GridSize.Height, 0, GridSize.Height);
 			}
 		}
 	}
