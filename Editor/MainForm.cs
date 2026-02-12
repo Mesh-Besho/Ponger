@@ -14,9 +14,7 @@ namespace MeshBesho.Ponger.Editor
 		private readonly LevelRenderPanel _Renderer;
 
 		private readonly ToolBar MainToolBar;
-		private readonly RadioCommand ModeMouseCommand;
-		private readonly RadioCommand ModeWallCommand;
-		private readonly RadioCommand ModeWinZoneCommand;
+		private readonly Command NewCommand;
 		private readonly Command OpenCommand;
 		private readonly Command SaveCommand;
 
@@ -26,19 +24,21 @@ namespace MeshBesho.Ponger.Editor
 			{
 			Title = "PongEdit";
 			
+			NewCommand = new Command(InvokeNew) { MenuText = "New" };
 			OpenCommand = new Command(InvokeOpen) { MenuText = "Open" };
 			SaveCommand = new Command(InvokeSave) { MenuText = "Save" };
 
-			ModeMouseCommand = new RadioCommand((s, e) => SetMode(ToolType.Mouse)) { ToolBarText = "Mouse" };
-			ModeWallCommand = new RadioCommand((s, e) => SetMode(ToolType.Wall)) { ToolBarText = "Wall", Controller = ModeMouseCommand };
-			ModeWinZoneCommand = new RadioCommand((s, e) => SetMode(ToolType.WinZone)) { ToolBarText = "Win Zone", Controller = ModeMouseCommand };
+			var Modes = new[] { ToolType.Mouse, ToolType.Wall, ToolType.Portal, ToolType.WinZone };
 
-			_ToolToolItems =
-				[
-				ModeMouseCommand.CreateToolItem(),
-				ModeWallCommand.CreateToolItem(),
-				ModeWinZoneCommand.CreateToolItem()
-				];
+			var ModeCommands = new RadioCommand[Modes.Length];
+			_ToolToolItems = new ToolItem[Modes.Length];
+
+			for (var i = 0; i < Modes.Length; i++)
+				{
+				var Mode = Modes[i];
+				ModeCommands[i] = new RadioCommand((_, _) => SetMode(Mode)) { ToolBarText = Modes[i].ToString(), Controller = i == 0 ? null : ModeCommands[i - 1] };
+				_ToolToolItems[i] = new RadioToolItem(ModeCommands[i]) { Tag = Mode };
+				}
 
 			Menu = new MenuBar
 				{
@@ -47,7 +47,7 @@ namespace MeshBesho.Ponger.Editor
 					new ButtonMenuItem
 						{
 						Text = "File",
-						Items = { OpenCommand, SaveCommand }
+						Items = { NewCommand, OpenCommand, SaveCommand }
 						},
 					new ButtonMenuItem
 						{
@@ -95,24 +95,11 @@ namespace MeshBesho.Ponger.Editor
 			MainToolBar.Items.AddRange(Items);
 			}
 
-		private void InvokeSave(Object? sender, EventArgs e)
+		private void InvokeNew(Object? sender, EventArgs e)
 			{
-			using var Picker = new SaveFileDialog
-				{
-				Filters = { new FileFilter("Level files", "*.ponger") }
-				};
-
-			if (Picker.ShowDialog(this) == DialogResult.Cancel)
-				return;
-
-			Save(Picker.FileName, _Editor.Level);
+			New();
 			}
 		
-		private void Save(String fileName, Level level)
-			{
-			File.WriteAllText(fileName, level.ToJson().ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-			}
-
 		private void InvokeOpen(Object? sender, EventArgs e)
 			{
 			using var Picker = new OpenFileDialog
@@ -125,6 +112,24 @@ namespace MeshBesho.Ponger.Editor
 				return;
 
 			Open(Picker.FileName);
+			}
+		
+		private void InvokeSave(Object? sender, EventArgs e)
+			{
+			using var Picker = new SaveFileDialog
+				{
+				Filters = { new FileFilter("Level files", "*.ponger") }
+				};
+
+			if (Picker.ShowDialog(this) == DialogResult.Cancel)
+				return;
+
+			Save(Picker.FileName, _Editor.Level);
+			}
+
+		private void New()
+			{
+			Open(new Level());
 			}
 		
 		private void Open(String fileName)
@@ -140,11 +145,26 @@ namespace MeshBesho.Ponger.Editor
 			_Editor = new LevelEditor(level);
 			_Editor.RedrawNeeded += () => _Renderer?.Invalidate();
 			_Editor.ModeChanged += () => RebuildToolbar();
+			_Editor.ValueNeeded += r => RequestValue(r);
 			_Editor.Error += ShowToolError;
 			
 			_Renderer.Editor = _Editor;
-			
+
 			RebuildToolbar();
+			SetMode(ToolType.Mouse);
+			_Renderer.Invalidate();
+			}
+		
+		private void Save(String fileName, Level level)
+			{
+			File.WriteAllText(fileName, level.ToJson().ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+			}
+		
+		private void RequestValue(EditorValueRequest request)
+			{
+			var Text = String.Empty;
+			request.Result = InputBox.ShowDialog(this, request.Prompt, ref Text) == DialogResult.Ok;
+			request.SetResult(Text);
 			}
 
 		private void InvokeCheck()
@@ -168,6 +188,9 @@ namespace MeshBesho.Ponger.Editor
 		private void SetMode(ToolType mode)
 			{
 			_Editor.Mode = mode;
+
+			foreach (var item in _ToolToolItems.OfType<RadioToolItem>())
+				item.Checked = Equals(item.Tag, mode);
 			}
 		
 		public void ShowToolError(String message)

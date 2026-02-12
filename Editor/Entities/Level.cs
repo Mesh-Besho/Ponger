@@ -10,6 +10,7 @@ namespace MeshBesho.Ponger.Editor
 		{
 		public List<Wall> Walls { get; } = new List<Wall>();
 		public List<Door> Doors { get; } = new List<Door>();
+		public List<Portal> Portals { get; } = new List<Portal>();
 		public List<WinZone> WinZones { get; } = new List<WinZone>();
 
 		public IEnumerable<IRenderable> GetRenderables()
@@ -20,14 +21,11 @@ namespace MeshBesho.Ponger.Editor
 			foreach (var door in Doors)
 				yield return door;
 
+			foreach (var portal in Portals)
+				yield return portal;
+			
 			foreach (var winZone in WinZones)
 				yield return winZone;
-			}
-
-		public void Render(Graphics graphics)
-			{
-			foreach (var wall in Walls)
-				wall.Render(graphics, RenderFlags.None);
 			}
 
 		public Boolean HitTest(PointF point, out HitTestResult result)
@@ -39,14 +37,23 @@ namespace MeshBesho.Ponger.Editor
 			foreach (var winZone in WinZones)
 				if (winZone.HitTest(point, out result))
 					return true;
+			
+			foreach (var door in Doors)
+				if (door.HitTest(point, out result))
+					return true;
+			
+			foreach (var portal in Portals)
+				if (portal.HitTest(point, out result))
+					return true;
 
 			result = HitTestResult.None;
 			return false;
 			}
-
+		
 		public static Level FromJson(JsonObject json)
 			{
 			var Level = new Level();
+			var Loader = new LevelLoader(Level);
 
 			var WallsSection = json["Shapes"] as JsonArray;
 
@@ -55,8 +62,15 @@ namespace MeshBesho.Ponger.Editor
 
 			var DoorsSection = json["doors"] as JsonArray;
 
-			foreach (var doorElement in DoorsSection)
-				Level.Doors.Add(Door.FromJson(doorElement.AsObject()));
+			if (DoorsSection != null)
+				foreach (var doorElement in DoorsSection)
+					Level.Doors.Add(Door.FromJson(doorElement.AsObject()));
+			
+			var PortalsSection = json["portals"] as JsonArray;
+
+			if (PortalsSection != null)
+				foreach (var portalElement in PortalsSection)
+					Level.Portals.Add(Portal.FromJson(portalElement.AsObject(), Loader));
 			
 			var WinZonesSection = json["winzones"] as JsonArray;
 
@@ -64,6 +78,8 @@ namespace MeshBesho.Ponger.Editor
 				foreach (var winZoneElement in WinZonesSection)
 					Level.WinZones.Add(WinZone.FromJson(winZoneElement.AsObject()));
 
+			Loader.Fix();
+			
 			return Level;
 			}
 
@@ -82,6 +98,12 @@ namespace MeshBesho.Ponger.Editor
 
 			foreach (var door in Doors)
 				DoorsSection.Add(door.ToJson());
+			
+			var PortalsSection = new JsonArray();
+			Data["portals"] = PortalsSection;
+
+			foreach (var portal in Portals)
+				PortalsSection.Add(portal.ToJson());
 			
 			var WinZonesSection = new JsonArray();
 			Data["winzones"] = WinZonesSection;
@@ -142,6 +164,30 @@ namespace MeshBesho.Ponger.Editor
 			
 			if (WinZones.Count == 0)
 				yield return new ValidationProblem("Level must have at least one win zone", false);
+			}
+		
+		private class LevelLoader : ILevelLoader
+			{
+			public Level Level { get; }
+
+			private List<Action<Level>> _Fixups;
+			
+			public LevelLoader(Level level)
+				{
+				Level = level;
+				_Fixups = new List<Action<Level>>();
+				}
+
+			public void AddFixup(Action<Level> fixup)
+				{
+				_Fixups.Add(fixup);
+				}
+
+			public void Fix()
+				{
+				foreach (var fixup in _Fixups)
+					fixup(Level);
+				}
 			}
 		}
 	}

@@ -8,7 +8,9 @@ namespace MeshBesho.Ponger.Editor
 		private PointF _MouseDownPosition;
 		private PointF _LastDelta;
 		private HitTestResult MouseDownEntity;
+		
 		private OverlayPolygon _MoveWallOverlay;
+		private OverlayRectangle _MoveObjectOverlay;
 		
 		public MouseTool(LevelEditor editor)
 			: base(editor)
@@ -26,20 +28,43 @@ namespace MeshBesho.Ponger.Editor
 				Editor.Level.Walls.Remove(selectedWall);
 				Editor.SelectedEntity = null;
 				}
+			
+			else if (Editor.SelectedEntity is Door selectedDoor)
+				{
+				Editor.Level.Doors.Remove(selectedDoor);
+				Editor.SelectedEntity = null;
+				}
+			
+			else if (Editor.SelectedEntity is Portal selectedPortal)
+				{
+				foreach(var portal in Editor.Level.Portals)
+					if (portal.Destination == selectedPortal)
+						portal.Destination = null;
+				
+				Editor.Level.Portals.Remove(selectedPortal);
+				Editor.SelectedEntity = null;
+				}
+			
+			else if (Editor.SelectedEntity is WinZone selectedWinZone)
+				{
+				Editor.Level.WinZones.Remove(selectedWinZone);
+				Editor.SelectedEntity = null;
+				}
 
 			Editor.InvokeRedraw();
 			}
 
 		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
-			point = Editor.Snap(point);
-
 			if (button != MouseButtons.Primary)
 				return false;
 
+			MouseDownEntity = Editor.HitTest(point, out var hit) ? hit : null;
+			
+			point = Editor.Snap(point);
+			
 			_MouseDownPosition = point;
 			_LastDelta = PointF.Empty;
-			MouseDownEntity = Editor.HitTest(point, out var hit) ? hit : null;
 			Editor.SelectedEntity = MouseDownEntity?.Entity;
 
 			if (hit is WallHitTestResult wallHit)
@@ -53,22 +78,31 @@ namespace MeshBesho.Ponger.Editor
 				_MoveWallOverlay = new OverlayPolygon(winZoneHit.Entity.Points);
 				Editor.AddOverlay(_MoveWallOverlay);
 				}
-
+			
+			else if (hit.Entity is Door door)
+				{
+				_MoveObjectOverlay = new OverlayRectangle(door.GetBoundingRectangle());
+				Editor.AddOverlay(_MoveObjectOverlay);
+				}
+			
+			else if (hit.Entity is Portal portal)
+				{
+				_MoveObjectOverlay = new OverlayRectangle(portal.GetBoundingRectangle());
+				Editor.AddOverlay(_MoveObjectOverlay);
+				}
+			
 			return true;
 			}
 
 		public override Boolean InvokeMouseUp(MouseButtons button, PointF point)
 			{
-			if (_MoveWallOverlay == null)
-				return false;
-			
 			if (button != MouseButtons.Primary)
 				return false;
 			
-			Editor.RemoveOverlay(_MoveWallOverlay);
-			
 			if (MouseDownEntity is WallHitTestResult wallHit)
 				{
+				Editor.RemoveOverlay(_MoveWallOverlay);
+				
 				if (wallHit.PointIndex.HasValue)
 					wallHit.Entity.Points[wallHit.PointIndex.Value] += _LastDelta;
 
@@ -81,6 +115,8 @@ namespace MeshBesho.Ponger.Editor
 			
 			else if (MouseDownEntity is WinZoneHitTestResult winZoneHit)
 				{
+				Editor.RemoveOverlay(_MoveWallOverlay);
+				
 				if (winZoneHit.PointIndex.HasValue)
 					winZoneHit.Entity.Points[winZoneHit.PointIndex.Value] += _LastDelta;
 
@@ -90,6 +126,23 @@ namespace MeshBesho.Ponger.Editor
 						winZoneHit.Entity.Points[index] += _LastDelta;
 					}
 				}
+			
+			else if (MouseDownEntity?.Entity is Door door)
+				{
+				Editor.RemoveOverlay(_MoveObjectOverlay);
+
+				door.Hinge += _LastDelta;
+				}
+			
+			else if (MouseDownEntity?.Entity is Portal portal)
+				{
+				Editor.RemoveOverlay(_MoveObjectOverlay);
+
+				portal.Position += _LastDelta;
+				}
+
+			else
+				return false;
 			
 			Editor.InvokeRedraw();
 
@@ -114,7 +167,7 @@ namespace MeshBesho.Ponger.Editor
 					_MoveWallOverlay.Move(PointF.Empty - _LastDelta + Delta);
 				}
 			
-			if (MouseDownEntity is WinZoneHitTestResult winZoneHit)
+			else if (MouseDownEntity is WinZoneHitTestResult winZoneHit)
 				{
 				if (winZoneHit.PointIndex.HasValue)
 					_MoveWallOverlay.MovePoint(winZoneHit.PointIndex.Value, PointF.Empty - _LastDelta + Delta);	
@@ -123,6 +176,16 @@ namespace MeshBesho.Ponger.Editor
 					_MoveWallOverlay.Move(PointF.Empty - _LastDelta + Delta);
 				}
 
+			else if (MouseDownEntity?.Entity is Door door)
+				{
+				_MoveObjectOverlay.Move(PointF.Empty - _LastDelta + Delta);
+				}
+			
+			else if (MouseDownEntity?.Entity is Portal portal)
+				{
+				_MoveObjectOverlay.Move(PointF.Empty - _LastDelta + Delta);
+				}
+			
 			_LastDelta = Delta;
 			
 			return true;

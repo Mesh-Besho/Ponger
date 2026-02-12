@@ -9,7 +9,9 @@ namespace MeshBesho.Ponger.Editor
 			{
 			Editor = editor;
 			}
+		
 		public LevelEditor Editor { get; }
+		
 		public abstract ToolType Type { get; }
 
 		public virtual Boolean InvokeMouseUp(MouseButtons button, PointF point) => false;

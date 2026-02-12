@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Nodes;
 using Eto.Drawing;
-using MeshBesho.Ponger.Editor;
 
 namespace MeshBesho.Ponger.Editor
 	{
-	internal class Door : IRenderable
+	internal class Door : EditorEntity, IRenderable
 		{
 		public PointF Hinge { get; set; }
 		public List<Wall> Walls { get; } = new List<Wall>();
@@ -52,6 +51,49 @@ namespace MeshBesho.Ponger.Editor
 				}
 			
 			graphics.FillEllipse(Brushes.Black, new RectangleF(Hinge - new PointF(2, 2), new SizeF(4, 4)));
+			}
+		
+		public Boolean HitTest(PointF point, out HitTestResult result)
+			{
+			var Bounds = GetBoundingRectangle();
+			Bounds.Inflate(5, 5);
+
+			if (Bounds.Contains(point))
+				{
+				result = new HitTestResult(this);
+				return true;
+				}
+			
+			result = HitTestResult.None;
+			return false;
+			}
+
+		public RectangleF GetBoundingRectangle()
+			{
+			var First = true;
+			var Bounds = new RectangleF();
+
+			foreach (var wall in Walls)
+				foreach (var point in wall.Points)
+					{
+					if (First || point.X < Bounds.Left)
+						Bounds.Left = point.X;
+
+					if (First || point.X > Bounds.Right)
+						Bounds.Right = point.X;
+
+					if (First || point.Y < Bounds.Top)
+						Bounds.Top = point.Y;
+
+					if (First || point.Y > Bounds.Bottom)
+						Bounds.Bottom = point.Y;
+
+					First = false;
+					}
+
+			Bounds.Offset(Hinge);
+			
+			return Bounds;
 			}
 		}
 	}

@@ -1,60 +1,7 @@
-using Eto.Drawing;
-using MeshBesho.Ponger.Editor;
+﻿using Eto.Drawing;
 
 namespace MeshBesho.Ponger.Editor
 	{
-	internal class OverlayLine : IRenderable
-		{
-		public OverlayLine() { }
-
-		public OverlayLine(PointF start, PointF end)
-			{
-			Start = start;
-			End = end;
-			}
-
-		public PointF Start { get; set; }
-		public PointF End { get; set; }
-
-		public void Render(Graphics graphics, RenderFlags flags)
-			{
-			graphics.DrawLine(Colors.Black, Start, End);
-			}
-		}
-
-	public class OverlayRectangle : IRenderable
-		{
-		public OverlayRectangle() { }
-		
-		public OverlayRectangle(PointF topLeft, PointF bottomRight)
-			{
-			Bounds = new RectangleF(topLeft, bottomRight - topLeft);	
-			}
-
-		public OverlayRectangle(PointF origin, SizeF size, Boolean center = false)
-			{
-			var NewBounds = new RectangleF(origin, size);
-			if (center) NewBounds.Center = origin;
-			Bounds = NewBounds;
-			}
-		
-		public RectangleF Bounds { get; set; }
-		
-		public void Render(Graphics graphics, RenderFlags flags)
-			{
-			graphics.DrawRectangle(Colors.Black, Bounds);
-			}
-		
-		/// <summary>
-		/// Move the overlay so that the center of the rectangle is at the given point.
-		/// </summary>
-		public void MoveCenter(PointF point)
-			{
-			var Delta = point - Bounds.Center;
-			Bounds += Delta;
-			}
-		}
-
 	internal class OverlayPolygon : IRenderable
 		{
 		public List<OverlayLine> Lines { get; } = new List<OverlayLine>();
@@ -106,5 +53,4 @@ namespace MeshBesho.Ponger.Editor
 			Lines[EndIndex].End += delta;
 			}
 		}
-	
 	}

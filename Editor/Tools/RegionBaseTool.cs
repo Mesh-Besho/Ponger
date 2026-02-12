@@ -55,7 +55,7 @@ namespace MeshBesho.Ponger.Editor
 			{
 			point = Editor.Snap(point);
 
-			_PointOverlay.MoveCenter(point);
+			_PointOverlay.MoveCenterTo(point);
 
 			if (_CurrentOverlay != null)
 				{

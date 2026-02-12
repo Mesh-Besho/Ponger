@@ -57,6 +57,7 @@ namespace MeshBesho.Ponger.Editor
 		public BaseTool Tool { get; private set; }
 
 		public event Action RedrawNeeded;
+		public event Action<EditorValueRequest> ValueNeeded;
 		public event Action<String> Error;		
 
 		private void OnModeChanged(ToolType value)
@@ -89,6 +90,9 @@ namespace MeshBesho.Ponger.Editor
 			if (type == ToolType.WinZone)
 				return new WinZoneTool(this);
 
+			if (type == ToolType.Portal)
+				return new PortalTool(this);
+			
 			throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown tool type");
 			}
 		
@@ -99,6 +103,9 @@ namespace MeshBesho.Ponger.Editor
 		
 		public void AddOverlay(IRenderable overlay)
 			{
+			if (overlay == null)
+				throw new ArgumentNullException(nameof(overlay));
+			
 			_Overlays.Add(overlay);
 			InvokeRedraw();
 			}
@@ -107,6 +114,13 @@ namespace MeshBesho.Ponger.Editor
 			{
 			_Overlays.Remove(overlay);
 			InvokeRedraw();
+			}
+
+		public String RequestString(String prompt, Func<String, Boolean> validator = null)
+			{
+			var Request = new EditorValueRequest<String>(prompt, validator);
+			ValueNeeded?.Invoke(Request);
+			return Request.Result ? Request.Value : null;
 			}
 
 		public Boolean InvokeMouseDown(MouseButtons button, PointF point)
