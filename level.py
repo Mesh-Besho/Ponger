@@ -2,13 +2,16 @@ import json
 import pyray as p
 
 
+from entities.key import key
 from wall import wall
 from entities.door import door
+from winzone import winzone
+from portal import portal
+from entities.mouse_magnet_powerup import mouse_magnet_powerup
 
 #from doers.blabla import blabla
 
 from entities.entity import entity
-from portal import portal
 
 
 class level(entity):#gjshugw
@@ -19,6 +22,8 @@ class level(entity):#gjshugw
         slef.portals = []
         slef.doors = []
         slef.winzones = []
+        slef.objects = []
+        slef.keys = []
     
 
     def load(self, filename):
@@ -26,30 +31,43 @@ class level(entity):#gjshugw
         the_text = f.read()
         the_json = json.loads(the_text)
 
-        BCS = the_json["background_colour"]
+        BCS = the_json.get("background_colour", "ghehujGUK")
         self.BC = self.convort(BCS)
+
+        self.song = the_json.get("song", "Please crash")
         
-        shapes = the_json["Shapes"]
+        shapes = the_json.get("Shapes", [])
         for shape in shapes:
             pig = self.load_wall(shape)
             self.walls.append(pig)
 
-        doors = the_json["doors"]
+        doors = the_json.get("doors", [])
         for door in doors:
             cow = self.load_door(door)
             self.doors.append(cow)
-        
-        portals = the_json["portals"]
+
+        portals = the_json.get("portals", [])
         for portal in portals:
             sheep = self.load_portal(portal)
             self.portals.append(sheep)
-        
-        winzones = the_json["winzones"]
+
+        winzones = the_json.get("winzones", [])
         for winzone in winzones:
             wawase = self
             eswawa = wawase.load_winzone(winzone)
             bong = eswawa
             self.winzones.append(bong)
+
+        objects = the_json.get("objects", [])
+        for obj in objects:
+            sheep = self.load_object(obj)
+            self.objects.append(sheep)
+            if isinstance(sheep, key):
+                self.keys.append(sheep)
+    
+         
+
+            
 
     def load_wall(self, shape):
         pig = wall()
@@ -83,6 +101,10 @@ class level(entity):#gjshugw
         for event_key in salmon:
             whale = salmon[event_key]
             cow.events[event_key] = whale
+        
+        
+
+        cow.locked = DooR.get("locked", None)
 
         return cow
    
@@ -91,6 +113,10 @@ class level(entity):#gjshugw
             return self.load_mover(DoeR)
         if DoeR["type"] == "door_spinner":
             return self.load_door_spinner(DoeR)
+        if DoeR["type"] == "door_wobbler":
+            return self.load_door_wobbler(DoeR)
+        else:
+            return "Please crash"
         #if DoeR[type] == "blabla"
         #   return self.load_blabla(ghu, yje, hdyt, gst)
     
@@ -109,6 +135,11 @@ class level(entity):#gjshugw
         jfy = door_spinner(angle, speed)
         return jfy
     
+    def load_door_wobbler(self, WobbleR):
+        from doers.door_wobbler import door_wobbler
+        jfy = door_wobbler()
+        return jfy
+    
     def load_vertex(self, vertex):
         pig_vec2 = p.Vector2(float(vertex["X"]), float(vertex["Y"]))
         return pig_vec2
@@ -121,20 +152,42 @@ class level(entity):#gjshugw
         return sheep
     
     def load_winzone(self, WinzonE):
-        TLC = WinzonE["TLC"]
-        TRC = WinzonE["TRC"]
-        BLC = WinzonE["BLC"]
-        BRC = WinzonE["BRC"]
-        fhu = winzone(TLC, TRC, BLC, BRC)
+        TLC = self.load_vertex(WinzonE["TLC"])
+        TRC = self.load_vertex(WinzonE["TRC"])
+        BLC = self.load_vertex(WinzonE["BLC"])
+        BRC = self.load_vertex(WinzonE["BRC"])
+        fhu = winzone([TLC, TRC, BRC, BLC])
         ttt = fhu
         return ttt
+
+    def load_key(self, KeY):
+        pos = self.load_vertex(KeY["pos"])
+        TEXTure = KeY["texture"]
+        sheep = key(pos, TEXTure)
+        return sheep
+
+    def load_object(self, ObjecT):
+        key_id = ObjecT["obj_id"]
+        type = ObjecT["type"]
+        if type == "Key":
+            sheep = self.load_key(ObjecT)
+        if type == "MouseMagnetPowerup":
+            sheep = self.load_mouse_magnet_powerup(ObjecT)
+        sheep.obj_id = key_id
+
+        return sheep
     
+    def load_mouse_magnet_powerup(self, ObjecT):
+        pos = self.load_vertex(ObjecT["pos"])
+        sheep = mouse_magnet_powerup(pos)
+        return sheep
+
     def find_portal_by_name(self, name:str):
+
         for x in self.portals:
             if x.name == name:
                 return x
         return None
-
 
     def convort(self, str:str):
         if str == "RED":
@@ -149,6 +202,7 @@ class level(entity):#gjshugw
             return p.GOLD        
         else:
             return p.LIME
+    
         
 
     def update(self, dt):
@@ -158,11 +212,12 @@ class level(entity):#gjshugw
        
     def draw(self):
         p.clear_background(self.BC)    
-        x = 0
-
+        
         for wall in self.walls:
-            self.draw_wall(wall, x)
-            x += 1
+            self.draw_wall(wall)
+
+        for winzone in self.winzones:
+            self.draw_winzone(winzone)
         
         for door in self.doors:
             self.draw_door(door)
@@ -170,21 +225,27 @@ class level(entity):#gjshugw
         for portal in self.portals:
             portal.draw()
 
-    def draw_wall(self, wall:wall, x:int):
-        l = len(wall.vertices)
-        for n in range(1, l-1):
-            a = wall.vertices[0]
-            b = wall.vertices[n]
-            c = wall.vertices[n+1]
-            colour = wall.colour
-
-            p.draw_triangle(a, b, c, colour)
+    def draw_wall(self, wall:wall):
+        self.draw_polygon(wall.vertices, wall.colour)
+    
+    def draw_winzone(self, wall:winzone):
+        self.draw_polygon(wall.vertices, wall.colour)
     
     def draw_door(self, door:door):
         for x in door.surfaces:
             moved_x = door.move_wall(x)
-            self.draw_wall(moved_x, 67)
+            self.draw_wall(moved_x)
         self.draw_hinge(door.get_location(), door.colour)
 
     def draw_hinge(self, hinge, colour):
         p.draw_circle(int(hinge.x), int(hinge.y), 1.0, colour)
+
+    def draw_polygon(self, vertices:list, colour:p.Color):
+        l = len(vertices)
+        for n in range(1, l-1):
+            a = vertices[0]
+            b = vertices[n]
+            c = vertices[n+1]
+            colour = colour
+
+            p.draw_triangle(a, b, c, colour)

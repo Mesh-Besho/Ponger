@@ -1,6 +1,5 @@
 {
-  "song": "level_1_fixed.ogg",
-  "background_colour": "GOLD",  
+  "background_colour": "GHUSA",  
   "Shapes": [
     {
       "Type": "POLY",
@@ -25,6 +24,7 @@
       ]
     },
     {
+
       "Type": "POLY",
       "Color": "RED",
       "Vertices": [
@@ -416,6 +416,7 @@
           ]
         }
       ],
+      "locked": "key1",
       "doers": {
         "open": {
           "type": "door_spinner",
@@ -439,9 +440,7 @@
       }
     }
   ],
-  "pushables": [
-  ],
-  "portals": [
+  "*portals": [
     
     {
       "pos": {
@@ -483,6 +482,18 @@
         "X": 510,
         "Y": 120
       }
+    }
+  ],
+  "objects": [
+    {
+      "texture": "shed_key.png",
+      "color": "GOLD",
+      "type": "key",
+      "pos": {
+        "X": 500,
+        "Y": 50
+      },
+      "obj_id": "key1"
     }
   ]
 }
