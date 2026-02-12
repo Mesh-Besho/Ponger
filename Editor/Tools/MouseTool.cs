@@ -47,6 +47,12 @@ namespace MeshBesho.Ponger.Editor
 				_MoveWallOverlay = OverlayPolygon.FromWall(wallHit.Entity);
 				Editor.AddOverlay(_MoveWallOverlay);
 				}
+			
+			else if (hit is WinZoneHitTestResult winZoneHit)
+				{
+				_MoveWallOverlay = new OverlayPolygon(winZoneHit.Entity.Points);
+				Editor.AddOverlay(_MoveWallOverlay);
+				}
 
 			return true;
 			}
@@ -73,6 +79,18 @@ namespace MeshBesho.Ponger.Editor
 					}
 				}
 			
+			else if (MouseDownEntity is WinZoneHitTestResult winZoneHit)
+				{
+				if (winZoneHit.PointIndex.HasValue)
+					winZoneHit.Entity.Points[winZoneHit.PointIndex.Value] += _LastDelta;
+
+				else
+					{
+					for (var index = 0; index < winZoneHit.Entity.Points.Count; index++)
+						winZoneHit.Entity.Points[index] += _LastDelta;
+					}
+				}
+			
 			Editor.InvokeRedraw();
 
 			return true;
@@ -91,6 +109,15 @@ namespace MeshBesho.Ponger.Editor
 				{
 				if (wallHit.PointIndex.HasValue)
 					_MoveWallOverlay.MovePoint(wallHit.PointIndex.Value, PointF.Empty - _LastDelta + Delta);	
+				
+				else
+					_MoveWallOverlay.Move(PointF.Empty - _LastDelta + Delta);
+				}
+			
+			if (MouseDownEntity is WinZoneHitTestResult winZoneHit)
+				{
+				if (winZoneHit.PointIndex.HasValue)
+					_MoveWallOverlay.MovePoint(winZoneHit.PointIndex.Value, PointF.Empty - _LastDelta + Delta);	
 				
 				else
 					_MoveWallOverlay.Move(PointF.Empty - _LastDelta + Delta);

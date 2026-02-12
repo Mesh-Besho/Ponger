@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using Eto.Drawing;
 using Eto.Forms;
-using MeshBesho.Ponger.Editor;
 
 namespace MeshBesho.Ponger.Editor
 	{
@@ -14,7 +13,7 @@ namespace MeshBesho.Ponger.Editor
 		private readonly List<IRenderable> _Overlays = new List<IRenderable>();
 
 		private EditorEntity? _SelectedEntity;
-
+		
 		public LevelEditor(Level level)
 			{
 			Level = level;
@@ -22,7 +21,7 @@ namespace MeshBesho.Ponger.Editor
 
 			OnModeChanged(ToolType.Mouse);
 			}
-		
+
 		public Level Level { get; }
 
 		public ObservableCollection<ToolItem> ToolbarItems { get; }
@@ -58,6 +57,7 @@ namespace MeshBesho.Ponger.Editor
 		public BaseTool Tool { get; private set; }
 
 		public event Action RedrawNeeded;
+		public event Action<String> Error;		
 
 		private void OnModeChanged(ToolType value)
 			{
@@ -86,9 +86,17 @@ namespace MeshBesho.Ponger.Editor
 			if (type == ToolType.Wall)
 				return new WallTool(this);
 
+			if (type == ToolType.WinZone)
+				return new WinZoneTool(this);
+
 			throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown tool type");
 			}
-
+		
+		public void ShowToolError(String message)
+			{
+			Error?.Invoke(message);
+			}
+		
 		public void AddOverlay(IRenderable overlay)
 			{
 			_Overlays.Add(overlay);

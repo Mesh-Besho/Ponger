@@ -10,6 +10,7 @@ namespace MeshBesho.Ponger.Editor
 		{
 		public List<Wall> Walls { get; } = new List<Wall>();
 		public List<Door> Doors { get; } = new List<Door>();
+		public List<WinZone> WinZones { get; } = new List<WinZone>();
 
 		public IEnumerable<IRenderable> GetRenderables()
 			{
@@ -18,6 +19,9 @@ namespace MeshBesho.Ponger.Editor
 			
 			foreach (var door in Doors)
 				yield return door;
+
+			foreach (var winZone in WinZones)
+				yield return winZone;
 			}
 
 		public void Render(Graphics graphics)
@@ -30,6 +34,10 @@ namespace MeshBesho.Ponger.Editor
 			{
 			foreach (var wall in Walls)
 				if (wall.HitTest(point, out result))
+					return true;
+			
+			foreach (var winZone in WinZones)
+				if (winZone.HitTest(point, out result))
 					return true;
 
 			result = HitTestResult.None;
@@ -49,6 +57,12 @@ namespace MeshBesho.Ponger.Editor
 
 			foreach (var doorElement in DoorsSection)
 				Level.Doors.Add(Door.FromJson(doorElement.AsObject()));
+			
+			var WinZonesSection = json["winzones"] as JsonArray;
+
+			if (WinZonesSection != null)
+				foreach (var winZoneElement in WinZonesSection)
+					Level.WinZones.Add(WinZone.FromJson(winZoneElement.AsObject()));
 
 			return Level;
 			}
@@ -69,11 +83,19 @@ namespace MeshBesho.Ponger.Editor
 			foreach (var door in Doors)
 				DoorsSection.Add(door.ToJson());
 			
+			var WinZonesSection = new JsonArray();
+			Data["winzones"] = WinZonesSection;
+
+			foreach (var winZone in WinZones)
+				WinZonesSection.Add(winZone.ToJson());
+			
 			return Data;
 			}
 
 		public IEnumerable<ValidationProblem> Validate(Boolean fix)
 			{
+			// Check walls
+			
 			var UselessWalls = new List<Wall>();
 
 			foreach (var wall in Walls)
@@ -94,6 +116,32 @@ namespace MeshBesho.Ponger.Editor
 
 			foreach (var wall in UselessWalls)
 				Walls.Remove(wall);
+			
+			// Check win zones
+
+			var UselessWinZones = new List<WinZone>();
+			
+			foreach (var winZone in WinZones)
+				{
+				var WinZoneBounds = winZone.GetBoundingRectangle();
+
+				if (WinZoneBounds.Width == 0 || WinZoneBounds.Height == 0)
+					{
+					UselessWinZones.Add(winZone);
+					yield return new ValidationProblem("WinZone is flat, should be removed", fix);
+
+					continue;
+					}
+
+				foreach (var problem in winZone.Validate(fix))
+					yield return problem;
+				}
+			
+			foreach (var winZone in UselessWinZones)
+				WinZones.Remove(winZone);
+			
+			if (WinZones.Count == 0)
+				yield return new ValidationProblem("Level must have at least one win zone", false);
 			}
 		}
 	}

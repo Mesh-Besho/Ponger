@@ -16,6 +16,7 @@ namespace MeshBesho.Ponger.Editor
 		private readonly ToolBar MainToolBar;
 		private readonly RadioCommand ModeMouseCommand;
 		private readonly RadioCommand ModeWallCommand;
+		private readonly RadioCommand ModeWinZoneCommand;
 		private readonly Command OpenCommand;
 		private readonly Command SaveCommand;
 
@@ -30,11 +31,13 @@ namespace MeshBesho.Ponger.Editor
 
 			ModeMouseCommand = new RadioCommand((s, e) => SetMode(ToolType.Mouse)) { ToolBarText = "Mouse" };
 			ModeWallCommand = new RadioCommand((s, e) => SetMode(ToolType.Wall)) { ToolBarText = "Wall", Controller = ModeMouseCommand };
+			ModeWinZoneCommand = new RadioCommand((s, e) => SetMode(ToolType.WinZone)) { ToolBarText = "Win Zone", Controller = ModeMouseCommand };
 
 			_ToolToolItems =
 				[
 				ModeMouseCommand.CreateToolItem(),
-				ModeWallCommand.CreateToolItem()
+				ModeWallCommand.CreateToolItem(),
+				ModeWinZoneCommand.CreateToolItem()
 				];
 
 			Menu = new MenuBar
@@ -137,7 +140,8 @@ namespace MeshBesho.Ponger.Editor
 			_Editor = new LevelEditor(level);
 			_Editor.RedrawNeeded += () => _Renderer?.Invalidate();
 			_Editor.ModeChanged += () => RebuildToolbar();
-
+			_Editor.Error += ShowToolError;
+			
 			_Renderer.Editor = _Editor;
 			
 			RebuildToolbar();
@@ -164,6 +168,11 @@ namespace MeshBesho.Ponger.Editor
 		private void SetMode(ToolType mode)
 			{
 			_Editor.Mode = mode;
+			}
+		
+		public void ShowToolError(String message)
+			{
+			Application.Instance.AsyncInvoke(() => MessageBox.Show(this, message, MessageBoxType.Error));
 			}
 		}
 	}

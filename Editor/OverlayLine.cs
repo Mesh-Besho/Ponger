@@ -61,22 +61,25 @@ namespace MeshBesho.Ponger.Editor
 
 		public static OverlayPolygon FromWall(Wall wall)
 			{
-			var Polygon = new OverlayPolygon();
-
-			if (wall.Points.Count < 2)
-				throw new ArgumentException("Wall must have at least 2 points");
-
-			for (var i = 0; i < wall.Points.Count - 1; i++)
-				Polygon.Lines.Add(new OverlayLine(wall.Points[i], wall.Points[i + 1]));
-
-			Polygon.Lines.Add(new OverlayLine(wall.Points[^1], wall.Points[0]));
-
-			return Polygon;
+			return new OverlayPolygon(wall.Points.ToArray());
 			}
 
 		public OverlayPolygon(params IEnumerable<OverlayLine> lines)
 			{
 			Lines.AddRange(lines);
+			}
+		
+		public OverlayPolygon(params IEnumerable<PointF> points)
+			{
+			var Points = points.ToArray();
+			
+			if (Points.Length < 2)
+				throw new ArgumentException("Must have at least 2 points");
+
+			for (var i = 0; i < Points.Length - 1; i++)
+				Lines.Add(new OverlayLine(Points[i], Points[i + 1]));
+
+			Lines.Add(new OverlayLine(Points[^1], Points[0]));
 			}
 
 		public void Render(Graphics graphics, RenderFlags flags)
