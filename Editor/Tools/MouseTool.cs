@@ -62,6 +62,16 @@ namespace MeshBesho.Ponger.Editor
 
 		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
 			{
+			if (button == MouseButtons.Alternate)
+				{
+				if(!Editor.HitTest(point, out var propertiesHit))
+					return false;
+
+				InvokeProperties(propertiesHit);
+				Editor.InvokeRedraw();
+				return true;
+				}
+			
 			if (button != MouseButtons.Primary)
 				return false;
 
@@ -84,7 +94,7 @@ namespace MeshBesho.Ponger.Editor
 				_MoveWallOverlay = new OverlayPolygon(winZoneHit.Entity.Points);
 				Editor.AddOverlay(_MoveWallOverlay);
 				}
-			
+
 			else if (hit.Entity is Door door)
 				{
 				_MoveObjectOverlay = new OverlayRectangle(door.GetBoundingRectangle());
@@ -104,6 +114,13 @@ namespace MeshBesho.Ponger.Editor
 				}
 			
 			return true;
+			}
+		
+		private void InvokeProperties(HitTestResult hit)
+			{
+			if (hit.Entity is Portal portal)
+				using (var editor = new PortalPropertiesDialog(Editor, portal))
+					editor.ShowModal();
 			}
 
 		public override Boolean InvokeMouseUp(MouseButtons button, PointF point)

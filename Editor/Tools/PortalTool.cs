@@ -67,27 +67,29 @@ namespace MeshBesho.Ponger.Editor
 				{
 				var Portal = new Portal { Position = point };
 				
-				Portal.Name = Editor.RequestString("Enter portal name:");
-
-				if (Portal.Name == null)
-					return;
+				using(var dialog = new PortalPropertiesDialog(Editor, Portal))
+					if (dialog.ShowModal() == DialogResult.Cancel)
+						return;
 				
 				Editor.Level.Portals.Add(Portal);
 
-				if (_FirstPortal == null)
+				if (Portal.Destination == null)
 					{
-					_FirstPortal = Portal;
-					_LinkOverlay.Start = _LinkOverlay.End = point;
-					Editor.AddOverlay(_LinkOverlay);
+					if (_FirstPortal == null)
+						{
+						_FirstPortal = Portal;
+						_LinkOverlay.Start = _LinkOverlay.End = point;
+						Editor.AddOverlay(_LinkOverlay);
+						}
+
+					else
+						{
+						_FirstPortal.Destination = Portal;
+						_FirstPortal = null;
+						Editor.RemoveOverlay(_LinkOverlay);
+						}
 					}
 
-				else
-					{
-					_FirstPortal.Destination = Portal;
-					_FirstPortal = null;
-					Editor.RemoveOverlay(_LinkOverlay);
-					}
-				
 				Editor.InvokeRedraw();
 				});
 

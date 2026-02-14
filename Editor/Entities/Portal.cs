@@ -9,7 +9,7 @@ namespace MeshBesho.Ponger.Editor
 		
 		public String Name { get; set; }
 		public PointF Position { get; set; }
-		public Portal Destination { get; set; }
+		public Portal? Destination { get; set; }
 
 		public void Render(Graphics graphics, RenderFlags flags)
 			{
