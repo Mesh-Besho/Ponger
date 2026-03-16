@@ -6,14 +6,16 @@ class game:
 
     def __init__(self):
         self.current_scene = menu_scene(self)
+        #self.current_scene = level_scene(3, self)
         self.player = player()
         self.run()
 
     def run(self):
         while not p.window_should_close():
             dt = p.get_frame_time()
-            self.current_scene.update(dt)
-            self.current_scene.draw()
+            the_frames_scene = self.current_scene
+            the_frames_scene.update(dt)
+            the_frames_scene.draw()
 
     def start_game(self, level_num:int):
         self.player = player()

@@ -1,5 +1,6 @@
 #i@:
 import pyray as p#donk
+from errors.ThisImageIsStupidError import ThisImageIsStupidError
 
 
 from entities.entity import entity#donk
@@ -8,6 +9,8 @@ class sprite(entity):
         super().__init__()
         self.colour = p.WHITE
         self.t = p.load_texture(png)
+        if self.t.width == 0 or self.t.height == 0:
+            raise ThisImageIsStupidError(png)
         self.W = self.t.width
         self.origin = p.Vector2(0, 0)
         self.H = self.t.height

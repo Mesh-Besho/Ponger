@@ -1,3 +1,23 @@
+"""
+== START OF PLAN ==
+#1 lasers
+1. we will load their start point and angle. [START:0, ANGLE:0]
+2. we will also load their properties [PROPERTIES:1]
+3. we will have to draw them []
+4. we will detect when we hit them and deal damage when we do []
+[1. PROPERTIES]
+1. damage
+2. colour
+#2 health
+1. things can hurt you and it will show how much you can take [THINGS:1]
+2. if you run out of health you will die []
+[1. THINGS]
+1. !lasers
+== END OF PLAN ==
+"""
+from errors import WheresTheMusicError
+from errors.UnknownObjectTypeError import UnknownObjectTypeError
+from entities.laser import laser
 import json
 import pyray as p
 
@@ -8,6 +28,7 @@ from entities.door import door
 from winzone import winzone
 from portal import portal
 from entities.mouse_magnet_powerup import mouse_magnet_powerup
+from entity_manager import entity_manager
 
 #from doers.blabla import blabla
 
@@ -15,15 +36,17 @@ from entities.entity import entity
 
 
 class level(entity):#gjshugw
-    def __init__(slef):
+    def __init__(self):
         #donk
         super().__init__()
-        slef.walls = []
-        slef.portals = []
-        slef.doors = []
-        slef.winzones = []
-        slef.objects = []
-        slef.keys = []
+        self.walls = []
+        self.portals = []
+        self.doors = []
+        self.winzones = []
+        self.objects = []
+        self.keys = []
+        self.lasers = []
+        self.ball_spawn = p.Vector2(300, 100.0)
     
 
     def load(self, filename):
@@ -35,6 +58,8 @@ class level(entity):#gjshugw
         self.BC = self.convort(BCS)
 
         self.song = the_json.get("song", "Please crash")
+#        if self.song == "Please crash":
+#            raise WheresTheMusicError.WheresTheMusicError(filename[8])
         
         shapes = the_json.get("Shapes", [])
         for shape in shapes:
@@ -64,9 +89,11 @@ class level(entity):#gjshugw
             self.objects.append(sheep)
             if isinstance(sheep, key):
                 self.keys.append(sheep)
-    
-         
 
+        lasers = the_json.get("lasers", [])
+        for laser in lasers:
+            woof = self.load_laser(laser)
+            self.lasers.append(woof)
             
 
     def load_wall(self, shape):
@@ -91,13 +118,13 @@ class level(entity):#gjshugw
             surface = self.load_wall(banana)
             cow.surfaces.append(surface)
 
-        donkey = DooR["doers"]
+        donkey = DooR.get("doers", [])
         for doer_key in donkey:
             doer = donkey[doer_key]
             sheep = self.load_doer(doer)
             cow.doers[doer_key] = sheep
 
-        salmon = DooR["events"]
+        salmon = DooR.get("events", {})
         for event_key in salmon:
             whale = salmon[event_key]
             cow.events[event_key] = whale
@@ -169,21 +196,30 @@ class level(entity):#gjshugw
     def load_object(self, ObjecT):
         key_id = ObjecT["obj_id"]
         type = ObjecT["type"]
-        if type == "Key":
+        if type == "key":
             sheep = self.load_key(ObjecT)
-        if type == "MouseMagnetPowerup":
+        elif type == "mouseMagnetPowerup":
             sheep = self.load_mouse_magnet_powerup(ObjecT)
+        else:
+            raise UnknownObjectTypeError(type)
         sheep.obj_id = key_id
 
         return sheep
-    
+
     def load_mouse_magnet_powerup(self, ObjecT):
         pos = self.load_vertex(ObjecT["pos"])
         sheep = mouse_magnet_powerup(pos)
         return sheep
+    
+    def load_laser(self, LaseR):
+        start = self.load_vertex(LaseR["start"]) 
+        direction = self.load_vertex(LaseR["direction"])
+        damage = float(LaseR.get("damage", 99))
+        colour = self.convort(LaseR.get("colour", "RED"))
+        jfy = laser(start, direction, damage, colour)
+        return jfy
 
     def find_portal_by_name(self, name:str):
-
         for x in self.portals:
             if x.name == name:
                 return x

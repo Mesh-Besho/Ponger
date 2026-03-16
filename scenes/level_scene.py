@@ -1,8 +1,10 @@
 #/scenes/menu_scene.py
 from doers.timer import timer
 import pyray as p
+from entities import door
 import scenes.scene as scene
 from entities.text import text
+import chatgpt as bounce_code
 
 class level_scene(scene.scene):
     #/scenes/menu_scenes.py[class{"menu", inherit{scene}}]
@@ -26,14 +28,56 @@ class level_scene(scene.scene):
         self.won = False
 
         my_ball = ball(self)
-        my_ball.set_location(p.Vector2(50.0, 50.0))
+        my_ball.set_location(self.level.ball_spawn)
         self.entities.add(my_ball)
         self.level_num = level_num
         for mikey in self.level.objects:
             self.entities.add(mikey)
+            #sudo scene
+        for my_laser in self.level.lasers:
+            self.entities.add(my_laser)
+            my_laser.scene = self
+        
+        
+    def get_lines(self):#get_lines
+        ls = []
+        walls = list(self.level.walls)
+        for door in self.level.doors:
+            for surface in door.surfaces:
+                moved_wall = door.move_wall(surface)
+                walls.append(moved_wall)
+        for blocker in walls:
+            l = blocker.get_lines()
+            ls.extend(l)
+        return ls
+        #\function
 
+    def get_closest_hit(self, start:p.Vector2, direction:p.Vector2, length:float=1000.0):
+        hits = []
+        ls = self.get_lines()
+        for line in ls:
+            #self, start, direction, length, p, line => hit to add to hits
+            my_donkey_or_spider_i_dont_know = p.Vector2(0.0, 0.0)
+            other_line_end = p.vector2_add(p.vector2_scale(direction, length), start)
+            other_line = bounce_code.Line(start, other_line_end)
+            hit = p.check_collision_lines(line.a, line.b, other_line.a, other_line.b, my_donkey_or_spider_i_dont_know)
+            if hit:
+                hits.append((line, my_donkey_or_spider_i_dont_know))
+        
+        if len(hits) == 0:
+            return None
+        else:
+            closest_hit = hits[0]
+            closest_d = length + 999.9990
+            for hit in hits:
+                d = p.vector2_distance(start, hit[1])
+                if d < closest_d:
+                    closest_d = d
+                    closest_hit = hit
 
-        #from entities.sprite import sprite
+            return closest_hit
+
+    #from entities.sprite import sprite
         #test_mouse = sprite(p.load_texture("mesh_besho.png"))
         #test_mouse.W = 64
         #test_mouse.H = 64

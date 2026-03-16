@@ -18,10 +18,7 @@ class entity:
     def hit_test(self, coordinates:p.Vector2):
         r = self.get_bounds()
         
-        if p.check_collision_point_rec(coordinates, r):
-            return True
-        else:
-            return False
+        return p.check_collision_point_rec(coordinates, r)
         
     def get_location(self):
         XY = p.Vector2(self.X, self.Y)

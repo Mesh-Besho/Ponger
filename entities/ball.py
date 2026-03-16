@@ -17,7 +17,7 @@ import maths
 
 MOUSE_MAGNET_RANGE = 200.1
 MOUSE_MAGNET_POWER = 5.1
-CIRC_RADIUS = 5.5
+CIRC_RADIUS = 5.0
 
 
 
@@ -25,7 +25,7 @@ CIRC_RADIUS = 5.5
 from entities.sprite import sprite
 class ball(sprite):
     #c':
-    def __init__(self, scene:level_scene):
+    def __init__(self, scene:level_scene, max_health=10, radius=CIRC_RADIUS):
         t = "ball.png"
         super().__init__(t)
         self.W = 10
@@ -36,8 +36,30 @@ class ball(sprite):
         self.level = scene.level
         self.scene = scene
         self.can_teleport = True
-        
+        self.health = max_health
+        self.max_health = max_health
+        self.radius = radius
+
+    def add_health(self, amount):
+        if not self.health + amount > self.max_health:
+            self.health += amount
+        else:
+            self.health = self.max_health
     
+    def lose_health(self, amount):
+        if not self.health - amount <= 0:
+            self.health -= amount
+        else:
+            self.health = 0
+            self.die()
+        print("Health: " + str(self.health))
+
+    def die(self):
+        self.scene.entities.remove(self)
+        if len(self.scene.entities.get_by_class(ball)) == 0:
+            #self.scene.game_over()
+            pass
+
     def update(self, dt):
         #dt = dt / 10.0
 
@@ -85,7 +107,7 @@ class ball(sprite):
         #self.direction
         #dt
         #circle: Circle, velocity: pyray.Vector2, walls: list[Line], dt: float
-        ls = []
+        
         #ls
 
         for winzone in self.level.winzones:
@@ -93,16 +115,11 @@ class ball(sprite):
                 #self.scene.won = False
                 self.scene.win()
                 return
-            
-        walls = list(self.level.walls)
-        for door in self.level.doors:
-            for surface in door.surfaces:
-                moved_wall = door.move_wall(surface)
-                walls.append(moved_wall)
-        for blocker in walls:
-            l = blocker.get_lines()
-            ls.extend(l)
-        circ = bounce_code.Circle(self.get_location(), CIRC_RADIUS)
+        
+        ls = self.scene.get_lines()#It's not called walls.
+
+        
+        circ = bounce_code.Circle(self.get_location(), self.radius)
         #circ
         #4/4
         self.direction = bounce_code.update_circle(circ, self.direction, ls, dt, self.when_hit_blocker)
