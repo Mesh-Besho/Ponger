@@ -57,9 +57,10 @@ class ball(sprite):
     def die(self):
         self.scene.entities.remove(self)
         if len(self.scene.entities.get_by_class(ball)) == 0:
-            #self.scene.game_over()
-            pass
-
+            if self.scene.game.player.lose_spare_ball():
+                self.scene.game_over()
+            else: 
+                self.scene.bye_ball()        
     def update(self, dt):
         #dt = dt / 10.0
 

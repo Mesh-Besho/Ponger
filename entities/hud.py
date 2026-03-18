@@ -3,11 +3,16 @@ from scenes.level_scene import level_scene
 import info
 import pyray as p
 from entities.ball import ball
+import random
+
 
 class hud(entity):
     def __init__(self, level_scene:level_scene):
         super().__init__()
         self.scene = level_scene
+        self.png = p.load_texture("box.png")
+        self.ball_png = p.load_texture("ball.png")
+        self.co_ordinates_cache = []
 
     def draw(self):
         super().draw()
@@ -27,6 +32,24 @@ class hud(entity):
             thing.set_location(p.Vector2(thing_x, 10))
             thing.draw()
             thing_x += thing.W + 20
+
+        self.ball_box()
+
+    def ball_box(self):
+        tex = self.png
+        sou = p.Rectangle(0, 0, self.png.width, self.png.height)
+        des = p.Rectangle(info.BLC.x, info.BLC.y - 100, 100, 100)
+        ori = p.Vector2(0, 0)
+        rot = 0
+        tin = p.WHITE
+        p.draw_texture_pro(tex, sou, des, ori, rot, tin)
+        for N in range(self.scene.game.player.balls_left):#heard the name?
+            if N > len(self.co_ordinates_cache) - 1:
+                X = random.randrange(int(des.x), int(des.x + des.width - 20))
+                Y = random.randrange(int(des.y + 35), int(des.y + des.height - 10))
+                self.co_ordinates_cache.append(p.Vector2(X, Y))
+            p.draw_texture_ex(self.ball_png, self.co_ordinates_cache[N], 0.0, 0.05001, p.WHITE)
+
         
     
     def do_health_bar(self, health, max_health):

@@ -76,6 +76,21 @@ class level_scene(scene.scene):
                     closest_hit = hit
 
             return closest_hit
+        
+    def game_over(self):
+        self.entities.add(text("GAME OVER", 100, 101, 28, p.RED))
+        self.do_something_soon(timer(5.0, self.game_over_part_b))
+   
+    def game_over_part_b(self):
+        self.entities.clear()
+        self.game.restart_game()
+
+    def bye_ball(self):
+        self.entities.add(text("You lost a ball!", 100, 101, 28, p.RED))
+        self.do_something_soon(timer(5.0, self.bye_ball_part_b))
+    def bye_ball_part_b(self):
+        self.game.restart_level()    
+        
 
     #from entities.sprite import sprite
         #test_mouse = sprite(p.load_texture("mesh_besho.png"))

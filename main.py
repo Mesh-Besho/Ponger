@@ -14,7 +14,8 @@ from scenes.level_scene import level_scene
 
 p.init_window(info.SCREEN_WIDTH, info.SCREEN_HEIGHT, b"Ponger")
 p.init_audio_device()
-#p.toggle_fullscreen()
+if not info.TESTING:
+    p.toggle_fullscreen()
 p.set_target_fps(60)
 
 gos = game()

@@ -21,6 +21,14 @@ class game:
         self.player = player()
         self.switch_scene(level_scene(level_num, self))
 
+    def restart_game(self):
+        self.switch_scene(menu_scene(self))
+
+    def restart_level(self):
+        if isinstance(self.current_scene, level_scene):
+            level_num = self.current_scene.level_num
+            self.switch_scene(level_scene(level_num, self))
+
     def switch_scene(self, new_scene):
         self.current_scene.die()
         self.current_scene = new_scene
