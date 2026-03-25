@@ -1,6 +1,10 @@
 {
   "song": "level_1_fixed.ogg",
-  "background_colour": "GOLD",  
+  "background_colour": "GOLD", 
+  "spawn_point": {
+    "X": 123,
+    "Y": 321
+  }, 
   "Shapes": [
     {
       "Type": "POLY",

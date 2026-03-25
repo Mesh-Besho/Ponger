@@ -140,19 +140,19 @@
       "Vertices": [
         {
           "X": 90,
-          "Y": 240
-        },
-        {
-          "X": 50,
-          "Y": 200
+          "Y": 230
         },
         {
           "X": 60,
           "Y": 200
         },
         {
+          "X": 50,
+          "Y": 200
+        },
+        {
           "X": 90,
-          "Y": 230
+          "Y": 240
         }
       ]
     },
@@ -160,19 +160,19 @@
       "Color": "RED",
       "Vertices": [
         {
-          "X": 0,
+          "X": 60,
           "Y": 200
         },
         {
+          "X": 60,
+          "Y": 120
+        },
+        {
           "X": 0,
           "Y": 120
         },
         {
-          "X": 60,
-          "Y": 120
-        },
-        {
-          "X": 60,
+          "X": 0,
           "Y": 200
         }
       ]
@@ -227,51 +227,45 @@
             }
           ]
         }
-      ],
-      "locked": "key1",
-      "doers": {
-        "open": {
-          "type": "door_spinner",
-          "angle": 1.55,
-          "speed": 1.0
-        },
-        "close": {
-          "type": "door_spinner",
-          "angle": -1.55,
-          "speed": -1.0
-        },
-        "wobble": {
-          "type": "door_wobbler"
-        }
-      },
-      "events": {
-        "on_start": "close",
-        "on_open": "open",
-        "on_close": "close",
-        "on_failed_open": "wobble"
-      }
+      ]
     }
   ],
+  "portals": [],
   "objects": [
     {
-      "texture": "mouse_magnet_powerup.png",
-      "color": "WHITE",
-      "type": "MouseMagnetPowerup",
+      "obj_id": "mouseMagnetPowerup1",
+      "type": "mouseMagnetPowerup",
       "pos": {
         "X": 370,
         "Y": 60
       },
-      "obj_id": "MouseMagnetPowerup1"
+      "texture": "mouse_magnet_powerup.png",
+      "color": "WHITE"
     },
     {
-      "texture": "house_key.png",
-      "color": "GOLD",
-      "type": "Key",
+      "obj_id": "key1",
+      "type": "key",
       "pos": {
-        "X": 150                                                                                ,
+        "X": 150,
         "Y": 80
       },
-      "obj_id": "key1"
+      "texture": "house_key.png",
+      "color": "GOLD"
+    }
+  ],
+  "winzones": [],
+  "lasers": [
+    {
+      "start": {
+        "X": 200,
+        "Y": 200
+      },
+      "direction": {
+        "X": 1,
+        "Y": 0
+      },
+      "damage": 50,
+      "*colour": "RED"
     }
   ]
 }

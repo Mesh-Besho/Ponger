@@ -1,5 +1,9 @@
 {
   "background_colour": "GHUSA",  
+  "spawn_point": {
+    "X": 27,
+    "Y": 27
+  },
   "Shapes": [
     {
       "Type": "POLY",
@@ -494,6 +498,20 @@
         "Y": 50
       },
       "obj_id": "key1"
+    }
+  ],
+  "lasers": [
+    {
+      "start": {
+        "X": 100,
+        "Y": 100
+      },
+      "direction": {
+        "X": 1,
+        "Y": 0
+      },
+      "damage": 1.0,
+      "colour": "RED"
     }
   ]
 }

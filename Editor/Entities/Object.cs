@@ -26,7 +26,7 @@ namespace MeshBesho.Ponger.Editor
 			var MagnetPowerUp = new Pobject()
 				{
 				Id = "MagnetPowerUp",
-				Type = "MouseMagnetPowerup",
+				Type = "mouseMagnetPowerup",
 				Texture = "mouse_magnet_powerup.png",
 				Color = FormatHelper.KnownColors["WHITE"]
 				};

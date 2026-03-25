@@ -29,7 +29,8 @@ from winzone import winzone
 from portal import portal
 from entities.mouse_magnet_powerup import mouse_magnet_powerup
 from entity_manager import entity_manager
-
+import info
+import errors.DonkeyDonutAteTheSpawnPointError as DDATSPerror
 #from doers.blabla import blabla
 
 from entities.entity import entity
@@ -46,7 +47,7 @@ class level(entity):#gjshugw
         self.objects = []
         self.keys = []
         self.lasers = []
-        self.ball_spawn = p.Vector2(300, 100.0)
+
     
 
     def load(self, filename):
@@ -56,6 +57,8 @@ class level(entity):#gjshugw
 
         BCS = the_json.get("background_colour", "ghehujGUK")
         self.BC = self.convort(BCS)
+
+        self.ball_spawn = self.load_vertex(the_json.get("spawn_point", DDATSPerror.DonkeyDonutAteTheSpawnPointError(filename[7:])))
 
         self.song = the_json.get("song", "Please crash")
 #        if self.song == "Please crash":
@@ -168,6 +171,8 @@ class level(entity):#gjshugw
         return jfy
     
     def load_vertex(self, vertex):
+        if isinstance(vertex, DDATSPerror.DonkeyDonutAteTheSpawnPointError):
+            raise vertex
         pig_vec2 = p.Vector2(float(vertex["X"]), float(vertex["Y"]))
         return pig_vec2
     
