@@ -1,4 +1,8 @@
 {
+  "spawn_point": {
+    "X": 203,
+    "Y": 101
+  },
   "Shapes": [
     {
       "Color": "RED",
@@ -266,6 +270,31 @@
       },
       "damage": 50,
       "*colour": "RED"
+    }
+  ],
+  "triggers": [
+    {
+      "enter": "test1",
+      "exit": "test1",
+      "activated": true,
+      "vertices": [
+        {
+          "X": 200,
+          "Y": 200
+        },
+        {
+          "X": 200,
+          "Y": 300
+        },
+        {
+          "X": 300,
+          "Y": 300
+        },
+        {
+          "X": 300,
+          "Y": 200
+        }
+      ]
     }
   ]
 }

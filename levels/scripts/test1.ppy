@@ -13,5 +13,3 @@ PRINTLN "And plus one is " (ADD Woof 1) "!"
 SET Dolphin (ADD Woof (ADD 2 2))
 
 PRINTLN "Dolphin is " Dolphin
-
-EXPLODE PIGEONS

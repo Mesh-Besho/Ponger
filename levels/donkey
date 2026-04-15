@@ -1,0 +1,7 @@
+#Put a trigger zone in a level,
+load it in the level,
+//should have key in json for setting a script for enter and exit events
+Make a class for trigger zone
+//Make sure to add the trigger zone to the level's update and drawing loop
+When the player enters the trigger zone, execute the enter event script
+When the player exits the trigger zone, execute the exit event script

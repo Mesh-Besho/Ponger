@@ -31,6 +31,7 @@ from entities.mouse_magnet_powerup import mouse_magnet_powerup
 from entity_manager import entity_manager
 import info
 import errors.DonkeyDonutAteTheSpawnPointError as DDATSPerror
+from entities.trigger import trigger
 #from doers.blabla import blabla
 
 from entities.entity import entity
@@ -47,6 +48,7 @@ class level(entity):#gjshugw
         self.objects = []
         self.keys = []
         self.lasers = []
+        self.triggers = []
 
     
 
@@ -97,7 +99,10 @@ class level(entity):#gjshugw
         for laser in lasers:
             woof = self.load_laser(laser)
             self.lasers.append(woof)
-            
+        triggers = the_json.get("triggers", [])
+        for trigger in triggers:
+            adhd = self.load_trigger(trigger)
+            self.triggers.append(adhd)
 
     def load_wall(self, shape):
         pig = wall()
@@ -223,6 +228,20 @@ class level(entity):#gjshugw
         colour = self.convort(LaseR.get("colour", "RED"))
         jfy = laser(start, direction, damage, colour)
         return jfy
+    
+    def load_trigger(self, TriggeR):#Well Done
+        vertices = []
+        for vertex in TriggeR["vertices"]:
+            pig_vec2 = self.load_vertex(vertex)
+            vertices.append(pig_vec2)
+        enter_script = TriggeR.get("enter", "")
+        exit_script = TriggeR.get("exit", "")
+        scripts = self.sort_out_triggers(enter_script, exit_script)
+        adhd = trigger(vertices, scripts)
+        return adhd
+
+    def sort_out_triggers(self, enter, exit):
+        return [f"levels/scripts/{enter}.ppy", f"levels/scripts/{exit}.ppy"]    
 
     def find_portal_by_name(self, name:str):
         for x in self.portals:
@@ -265,6 +284,9 @@ class level(entity):#gjshugw
 
         for portal in self.portals:
             portal.draw()
+
+        for trigger in self.triggers:
+            self.draw_polygon(trigger.vertices, p.ORANGE)
 
     def draw_wall(self, wall:wall):
         self.draw_polygon(wall.vertices, wall.colour)

@@ -116,6 +116,16 @@ class ball(sprite):
                 #self.scene.won = False
                 self.scene.win()
                 return
+        for trigger in self.level.triggers:
+            if trigger.collides_with(p.vector2_scale(self.direction, dt), self.get_location()):
+                #self.scene.won = False
+                if not trigger.player_inside:
+                    trigger.on_enter()
+            else:
+                if trigger.player_inside:
+                    trigger.on_exit()
+
+                
         
         ls = self.scene.get_lines()#It's not called walls.
 
