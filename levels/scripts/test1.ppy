@@ -1,0 +1,17 @@
+# I am a comment, ignore me
+
+# I am too!!!
+
+SET Woof 4
+
+PRINTLN "Did you know that Woof is " Woof "?"
+
+PRINTLN "And plus one is " (ADD Woof 1) "!"
+
+# Let's try something hard...
+
+SET Dolphin (ADD Woof (ADD 2 2))
+
+PRINTLN "Dolphin is " Dolphin
+
+EXPLODE PIGEONS
