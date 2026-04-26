@@ -30,9 +30,9 @@ namespace MeshBesho.Ponger.Editor
 			//Reset();
 			}
 		
-		public override Boolean InvokeMouseMove(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseMove(EditorMouseEventArgs e)
 			{
-			point = Editor.Snap(point);
+			var point = Editor.Snap(e.WorldPosition);
 
 			_PointOverlay.MoveCenter(point);
 
@@ -44,9 +44,9 @@ namespace MeshBesho.Ponger.Editor
 			return false;
 			}
 		
-		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseDown(EditorMouseEventArgs e)
 			{
-			if (button == MouseButtons.Alternate)
+			if (e.Buttons == MouseButtons.Alternate)
 				{
 				if (_FirstPortal != null)
 					{
@@ -58,10 +58,10 @@ namespace MeshBesho.Ponger.Editor
 				return false;
 				}
 
-			if (button != MouseButtons.Primary)
+			if (e.Buttons != MouseButtons.Primary)
 				return false;
 			
-			point = Editor.Snap(point);
+			var point = Editor.Snap(e.WorldPosition);
 
 			Application.Instance.AsyncInvoke(() =>
 				{
@@ -96,9 +96,9 @@ namespace MeshBesho.Ponger.Editor
 			return true;
 			}
 
-		public override Boolean InvokeMouseUp(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseUp(EditorMouseEventArgs e)
 			{
-			if (button != MouseButtons.Primary)
+			if (e.Buttons != MouseButtons.Primary)
 				return false;
 			
 			return true;

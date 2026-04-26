@@ -1,4 +1,4 @@
-﻿using Eto.Drawing;
+using Eto.Drawing;
 
 namespace MeshBesho.Ponger.Editor
 	{
@@ -7,6 +7,9 @@ namespace MeshBesho.Ponger.Editor
 		private IMatrix _Matrix;
 		private IMatrix _Inverse;
 
+		/// <summary>
+		/// Origin point, in world coordinates.
+		/// </summary>
 		public PointF Origin
 			{
 			get => _Origin;
@@ -17,6 +20,22 @@ namespace MeshBesho.Ponger.Editor
 				}
 			} private PointF _Origin;
 		
+		/// <summary>
+		/// Viewport size, in screen coordinates.
+		/// </summary>
+		public SizeF Size
+			{
+			get => _Size;
+			set
+				{
+				_Size = value;
+				UpdateMatrix();
+				}
+			} private SizeF _Size;
+
+		/// <summary>
+		/// World to screen scale factor.
+		/// </summary>
 		public Single Scale
 			{
 			get => _Scale;
@@ -31,6 +50,7 @@ namespace MeshBesho.Ponger.Editor
 			{
 			var New = Matrix.Create();
 
+			New.Translate(_Size.Width / 2, _Size.Height / 2);
 			New.Scale(Scale);
 			New.Translate(-Origin.X, -Origin.Y);
 
@@ -48,10 +68,40 @@ namespace MeshBesho.Ponger.Editor
 		
 		public IMatrix GetMatrix() => _Matrix;
 		
+		/// <summary>World to screen.</summary>
 		public RectangleF Transform(RectangleF rectangle) => _Matrix.TransformRectangle(rectangle);
+
+		/// <summary>World to screen.</summary>
 		public PointF Transform(PointF point) => _Matrix.TransformPoint(point);
 
+		/// <summary>World to screen.</summary>
+		public SizeF Transform(SizeF size) => _Matrix.TransformSize(size);
+
+		/// <summary>Screen to world.</summary>
 		public RectangleF TransformInverse(RectangleF rectangle) => _Inverse.TransformRectangle(rectangle);
+
+		/// <summary>Screen to world.</summary>
 		public PointF TransformInverse(PointF point) => _Inverse.TransformPoint(point);
+
+		/// <summary>Screen to world.</summary>
+		public SizeF TransformInverse(SizeF size) => _Inverse.TransformSize(size);
+
+		/// <summary>
+		/// Get the viewport rectangle in world coordinates.
+		/// </summary>
+		public RectangleF GetWorldViewport()
+			{
+			var Viewport = GetScreenViewport();
+			return TransformInverse(Viewport);
+			}
+
+		/// <summary>
+		/// Get the viewport rectangle in screen coordinates.
+		/// </summary>
+		public RectangleF GetScreenViewport()
+			{
+			var ScreenOrigin = Transform(Origin);
+			return new RectangleF(ScreenOrigin, Size) - new SizeF(Size.Width / 2, Size.Height / 2);
+			}
 		}
 	}

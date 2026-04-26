@@ -7,7 +7,6 @@ namespace MeshBesho.Ponger.Editor
 		{
 		public LevelEditor Editor { get; set; }
 
-		private PointF _Center;
 		private PointF? _MouseWorldPosition;
 		private PointF _DragCameraOrigin;
 		private PointF? _DragMouseOrigin;
@@ -15,7 +14,7 @@ namespace MeshBesho.Ponger.Editor
 		public Camera ActiveCamera
 			{
 			get => _ActiveCamera;
-			set
+			private set
 				{
 				_ActiveCamera = value;
 				Invalidate();
@@ -31,7 +30,7 @@ namespace MeshBesho.Ponger.Editor
 			{
 			base.OnSizeChanged(e);
 
-			_Center = new PointF(Width / 2f, Height / 2f);
+			_ActiveCamera.Size = Size;
 			}
 
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -47,9 +46,12 @@ namespace MeshBesho.Ponger.Editor
 				return;
 				}
 
-			var MouseScreenPosition = e.Location - _Center;
-			var WorldPoint = _ActiveCamera.TransformInverse(MouseScreenPosition);
-			e.Handled = Editor?.InvokeMouseDown(e.Buttons, WorldPoint) ?? false;
+			e.Handled = Editor?.InvokeMouseDown(Transform(e)) ?? false;
+			}
+
+		private EditorMouseEventArgs Transform(MouseEventArgs e)
+			{
+			return new EditorMouseEventArgs(_ActiveCamera, e.Location, e.Buttons);
 			}
 
 		protected override void OnMouseUp(MouseEventArgs e)
@@ -65,20 +67,14 @@ namespace MeshBesho.Ponger.Editor
 				return;
 				}
 
-			var MouseScreenPosition = e.Location - _Center;
-			var WorldPoint = _ActiveCamera.TransformInverse(MouseScreenPosition);
-			e.Handled = Editor?.InvokeMouseUp(e.Buttons, WorldPoint) ?? false;
+			e.Handled = Editor?.InvokeMouseUp(Transform(e)) ?? false;
 			}
 		
 		protected override void OnMouseMove(MouseEventArgs e)
 			{
-			if(!e.Delta.IsZero)
-				throw new Exception("Mouse movement should be handled by the mouse wheel.");
-			
 			base.OnMouseMove(e);
 
-			var MouseScreenPosition = e.Location - _Center;
-			_MouseWorldPosition = _ActiveCamera.TransformInverse(MouseScreenPosition);
+			_MouseWorldPosition = _ActiveCamera.TransformInverse(e.Location);
 			
 			if (_DragMouseOrigin.HasValue)
 				{
@@ -91,7 +87,7 @@ namespace MeshBesho.Ponger.Editor
 				return;
 				}
 
-			e.Handled = Editor?.InvokeMouseMove(e.Buttons, _MouseWorldPosition.Value) ?? false;
+			e.Handled = Editor?.InvokeMouseMove(Transform(e)) ?? false;
 			Invalidate();
 			}
 
@@ -106,15 +102,20 @@ namespace MeshBesho.Ponger.Editor
 			{
 			base.OnMouseWheel(e);
 
-			var ScreenPosition = e.Location - _Center;
+			Zoom(e.Delta.Height, e.Location);
+			}
+
+		public void Zoom(Single delta, PointF? location = null)
+			{
+			var ScreenPosition = location ?? PointF.Empty;
 			var OldMouseWorldPosition = _ActiveCamera.TransformInverse(ScreenPosition);
 			
-			_ActiveCamera.Scale = (Single)Math.Clamp(_ActiveCamera.Scale * Math.Pow(1.1f, e.Delta.Height), 0.1f, 10f);
+			_ActiveCamera.Scale = (Single)Math.Clamp(_ActiveCamera.Scale * Math.Pow(1.1f, delta), 0.1f, 10f);
 
 			// Asymmetric zoom. Not sure if I like this better or not. Definitely feels better to zoom in on the mouse position,
 			// but zooming out feels weird either way.
 			
-			if (e.Delta.Height > 0)
+			if (delta > 0)
 				{
 				var NewMouseWorldPosition = _ActiveCamera.TransformInverse(ScreenPosition);
 				_ActiveCamera.Origin += new PointF(OldMouseWorldPosition.X - NewMouseWorldPosition.X, OldMouseWorldPosition.Y - NewMouseWorldPosition.Y);
@@ -128,38 +129,11 @@ namespace MeshBesho.Ponger.Editor
 			e.Graphics.Clear(Colors.White);
 			
 			e.Graphics.SaveTransform();
-			e.Graphics.TranslateTransform(_Center);
-			e.Graphics.MultiplyTransform(_ActiveCamera.GetMatrix());
-
-			if (Program.Settings.Grid.Enabled && !Program.Settings.Grid.OnTop)
-				DrawGrid(e.Graphics);
-			
-			Editor.Render(e.Graphics);
-
-			if (Program.Settings.Grid.Enabled && Program.Settings.Grid.OnTop)
-				DrawGrid(e.Graphics);
-			
+			Editor.Render(e.Graphics, _ActiveCamera);
 			e.Graphics.RestoreTransform();
 
 			if (_MouseWorldPosition.HasValue)
 				e.Graphics.DrawText(SystemFonts.Default(20), Brushes.Black, new PointF(10, 10), $"{_MouseWorldPosition.Value.X:F2}, {_MouseWorldPosition.Value.Y:F2}");
-			}
-		
-		private void DrawGrid(Graphics graphics)
-			{
-			var GridSize = new Size(Program.Settings.Grid.Size, Program.Settings.Grid.Size);
-			var VisibleBounds = _ActiveCamera.TransformInverse(new RectangleF(-_Center.X, -_Center.Y, Size.Width, Size.Height));
-
-			var Pen = Pens.LightGrey;
-
-			for (var x = VisibleBounds.Left - (VisibleBounds.Left % GridSize.Width); x <= VisibleBounds.Right; x += GridSize.Width)
-				graphics.DrawLine(Pen, x, VisibleBounds.Top, x, VisibleBounds.Bottom);
-
-			for (var y = VisibleBounds.Top - (VisibleBounds.Top % GridSize.Height); y <= VisibleBounds.Bottom; y += GridSize.Height)
-				graphics.DrawLine(Pen, VisibleBounds.Left, y, VisibleBounds.Right, y);
-			
-			graphics.DrawLine(Pens.Black, -GridSize.Width, 0, GridSize.Width, 0);
-			graphics.DrawLine(Pens.Black, 0, -GridSize.Height, 0, GridSize.Height);
 			}
 		}
 	}

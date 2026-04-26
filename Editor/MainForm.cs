@@ -14,6 +14,8 @@ namespace MeshBesho.Ponger.Editor
 		private readonly LevelRenderPanel _Renderer;
 
 		private readonly ToolBar MainToolBar;
+		private readonly Command ZoomInCommand;
+		private readonly Command ZoomOutCommand;
 		private readonly Command NewCommand;
 		private readonly Command OpenCommand;
 		private readonly Command SaveCommand;
@@ -24,6 +26,8 @@ namespace MeshBesho.Ponger.Editor
 			{
 			Title = "PongEdit";
 			
+			ZoomInCommand = new Command(InvokeZoomIn) { ToolBarText = "+" };
+			ZoomOutCommand = new Command(InvokeZoomOut) { ToolBarText = "-" };
 			NewCommand = new Command(InvokeNew) { MenuText = "New" };
 			OpenCommand = new Command(InvokeOpen) { MenuText = "Open" };
 			SaveCommand = new Command(InvokeSave) { MenuText = "Save" };
@@ -79,9 +83,24 @@ namespace MeshBesho.Ponger.Editor
 			RebuildToolbar();
 			}
 
+		private void InvokeZoomIn(Object? sender, EventArgs e)
+			{
+			_Renderer.Zoom(1);
+			}
+
+		private void InvokeZoomOut(Object? sender, EventArgs e)
+			{
+			_Renderer.Zoom(-1);
+			}
+
 		private void RebuildToolbar()
 			{
-			var Items = new List<ToolItem>(_ToolToolItems);
+			var Items = new List<ToolItem>();
+
+			Items.Add(ZoomInCommand);
+			Items.Add(ZoomOutCommand);
+
+			Items.AddRange(_ToolToolItems);
 
 			var ToolItems = _Editor.Tool?.GetToolbarItems().ToArray() ?? Array.Empty<ToolItem>();
 

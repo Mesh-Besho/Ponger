@@ -28,17 +28,17 @@ namespace MeshBesho.Ponger.Editor
 			Reset();
 			}
 
-		public override Boolean InvokeMouseDown(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseDown(EditorMouseEventArgs e)
 			{
-			point = Editor.Snap(point);
+			var point = Editor.Snap(e.WorldPosition);
 
-			if (button == MouseButtons.Primary)
+			if (e.Buttons == MouseButtons.Primary)
 				{
 				CommitPoint(point);
 				return true;
 				}
 
-			if (button == MouseButtons.Alternate)
+			if (e.Buttons == MouseButtons.Alternate)
 				{
 				RollbackPoint();
 
@@ -51,9 +51,9 @@ namespace MeshBesho.Ponger.Editor
 			return false;
 			}
 
-		public override Boolean InvokeMouseMove(MouseButtons button, PointF point)
+		public override Boolean InvokeMouseMove(EditorMouseEventArgs e)
 			{
-			point = Editor.Snap(point);
+			var point = Editor.Snap(e.WorldPosition);
 
 			_PointOverlay.MoveCenterTo(point);
 

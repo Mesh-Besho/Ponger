@@ -46,43 +46,6 @@ namespace MeshBesho.Ponger.Editor
 
 		public Boolean HitTest(PointF point, out HitTestResult result)
 			{
-			// Try to hit any of the points first
-
-			for (var i = 0; i < Points.Count; i++)
-				if (HitTestPoint(i, point, out result))
-					return true;
-
-			// Otherwise, check if the point is inside the polygon
-
-			return HitTestInside(point, out result);
-			}
-
-		private Boolean HitTestPoint(Int32 pointIndex, PointF testPoint, out HitTestResult result)
-			{
-			result = HitTestResult.None;
-
-			if ((UInt32)pointIndex >= (UInt32)Points.Count)
-				return false;
-
-			var WallPoint = Points[pointIndex];
-
-			const Single Radius = 10f;
-			const Single RadiusSquared = Radius * Radius;
-
-			var Dx = testPoint.X - WallPoint.X;
-			var Dy = testPoint.Y - WallPoint.Y;
-
-			if ((Dx * Dx) + (Dy * Dy) <= RadiusSquared)
-				{
-				result = new WallHitTestResult(this, pointIndex);
-				return true;
-				}
-
-			return false;
-			}
-
-		private Boolean HitTestInside(PointF point, out HitTestResult result)
-			{
 			result = HitTestResult.None;
 
 			// Need at least a triangle for a closed polygon area
@@ -119,6 +82,13 @@ namespace MeshBesho.Ponger.Editor
 				}
 
 			return false;
+			}
+
+		public override OverlayHandle[] GetHandles()
+			{
+			return Points
+				.Select((p, i) => new OverlayHandle(p, new WallHitTestResult(this, i)))
+				.ToArray();
 			}
 
 		public static Wall FromJson(JsonObject json)
