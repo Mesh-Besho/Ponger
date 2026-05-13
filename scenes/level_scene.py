@@ -29,6 +29,7 @@ class level_scene(scene.scene):
 
         my_ball = ball(self)
         my_ball.set_location(self.level.ball_spawn)
+        my_ball.id = "mainball"
         self.entities.add(my_ball)
         self.level_num = level_num
         for mikey in self.level.objects:
@@ -37,6 +38,9 @@ class level_scene(scene.scene):
         for my_laser in self.level.lasers:
             self.entities.add(my_laser)
             my_laser.scene = self
+        for my_trigger in self.level.triggers:
+            self.entities.add(my_trigger)
+            my_trigger.scene = self
         
         
     def get_lines(self):#get_lines

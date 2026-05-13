@@ -1,4 +1,7 @@
 
+from errors.UnknownEntityError import UnknownEntityError
+
+
 class entity_manager:
     from entities.entity import entity
     #cheer up class
@@ -21,3 +24,9 @@ class entity_manager:
         interesting = filter(lambda v: type(v) == _class, self.entities)
         return list(interesting)
         
+    def get_by_name(self, name):
+        #please help me with this one, i have no idea how to do it
+        for e in self.entities:
+            if hasattr(e, "id") and e.id == name:
+                return e
+        raise UnknownEntityError(name)

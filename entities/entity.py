@@ -1,5 +1,6 @@
 import pyray as p
 from doers.doer import doer
+import pongthon
 
 class entity:
     X = 0
@@ -68,3 +69,8 @@ class entity:
             return
 
         self.do_something_soon(thing_to_do)
+
+    def do_your_script_this_instant(self, method_name:str, args:list):
+        raise pongthon.YourCodeIsStupidError(f"Can't find a method called '{method_name}' on {self}!")
+
+    

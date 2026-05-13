@@ -3,6 +3,7 @@ from entities.entity import entity
 import chatgpt as bounce_code
 class wall(entity):
     def __init__(self, owner=None):
+        super().__init__()
         self.vertices = []
         self.colour = p.BLACK
         self.owner = owner

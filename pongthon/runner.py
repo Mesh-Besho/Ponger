@@ -16,9 +16,10 @@ class ScriptState:
         return self.variables[name]
 
 class ScriptRunner:
-    def __init__(self, script:Script):
+    def __init__(self, script:Script, scene: Any):
         self.script = script
         self.state = ScriptState()
+        self.scene = scene
 
     def run(self):
         for statement in self.script.statements:
@@ -36,6 +37,12 @@ class ScriptRunner:
 
         elif statement.command.upper() == "ADD":
             return self.run_command_add(statement.args)
+
+        elif statement.command.upper() == "CALL":
+            return self.run_command_call(statement.args)
+        
+        elif statement.command.upper() == "GETENTITY":
+            return self.run_command_getentity(statement.args)
 
         else:
             raise YourCodeIsStupidError(f"What nonsense command is '{statement.command}'? Never heard of it!")
@@ -71,6 +78,26 @@ class ScriptRunner:
             raise YourCodeIsStupidError("Types of arguments for ADD don't match!")
 
         return value1 + value2
+    
+    def run_command_call(self, args):
+        if not len(args) >= 2:
+            raise YourCodeIsStupidError("CALL command needs at least 2 arguments: owner, method, and optionally more arguments!")
+        owner = self.get_value(args[0])
+        method_name = self.get_value(args[1])
+        if len(args) > 2:
+            method_args = [self.get_value(a) for a in args[2:]]
+        else:
+            method_args = []
+
+        owner.do_your_script_this_instant(method_name, method_args)
+
+    def run_command_getentity(self, args):
+        if not len(args) == 1:
+            raise YourCodeIsStupidError("GETENTITY command needs exactly 1 argument!")
+
+        entity_name = self.get_value(args[0])
+        entity = self.scene.entities.get_by_name(entity_name)  # TODO: implement entity retrieval by name
+        return entity
 
     def get_value(self, token:Token):
         if isinstance(token, VariableToken):

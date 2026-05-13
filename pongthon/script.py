@@ -167,7 +167,7 @@ class Script:
     def read_variable(self, reader):
         name_chars = []
 
-        while not reader.is_finished and not reader.current.isspace():
+        while not reader.is_finished and not reader.current.isspace() and reader.current != ')':
             if not reader.current.isalpha():
                 raise YourCodeIsStupidError(f"Invalid character '{reader.current}' in variable name")
 

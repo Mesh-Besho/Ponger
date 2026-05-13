@@ -6,6 +6,7 @@ import pongthon as ppy
 from wall import wall
 from chatgpt import Line
 
+
 class trigger(wall):
     #/entities/trigger.py[class{name:trigger inherrit{entity}}]
     def __init__(self, verticies, scripts):
@@ -14,6 +15,7 @@ class trigger(wall):
         self.vertices = verticies
         self.scripts = scripts
         self.player_inside = False
+        
         #\function
 
     def collides_with(self, d, l)->bool:
@@ -31,7 +33,7 @@ class trigger(wall):
         #/entities/trigger.py[class{name:trigger inherrit{entity}}[def{name:on_enter args:{player}}]]
         name = self.scripts[0]
         my_script = ppy.Script(open(name).read())
-        ppy.ScriptRunner(my_script).run()
+        ppy.ScriptRunner(my_script, self.scene).run()
         self.player_inside = True
         #\function
 
@@ -39,7 +41,7 @@ class trigger(wall):
         #/entities/trigger.py[class{name:trigger inherrit{entity}}[def{name:on_exit args:{player}}]]
         name = self.scripts[1]
         my_script = ppy.Script(open(name).read())
-        ppy.ScriptRunner(my_script).run()
+        ppy.ScriptRunner(my_script, self.scene).run()
         self.player_inside = False
         #\function
     #\class

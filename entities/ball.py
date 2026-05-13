@@ -124,9 +124,6 @@ class ball(sprite):
             else:
                 if trigger.player_inside:
                     trigger.on_exit()
-
-                
-        
         ls = self.scene.get_lines()#It's not called walls.
 
         
@@ -135,8 +132,15 @@ class ball(sprite):
         #4/4
         self.direction = bounce_code.update_circle(circ, self.direction, ls, dt, self.when_hit_blocker)
         self.set_location(circ.center)
+            
+    def do_your_script_this_instant(self, method_name:str, args:list):
+        if method_name == "unknown_boing":
+            self.when_hit_blocker(self.get_location(), None)
 
-    def when_hit_blocker(self, new_position:p.Vector2, line:bounce_code.Line):
+                
+        
+
+    def when_hit_blocker(self, new_position:p.Vector2, line:bounce_code.Line|None):
         boingy = text("Boing!", new_position.x, new_position.y, 12, p.RED)
         boingy.do_something_soon(text_boinger())
         self.scene.entities.add(boingy)

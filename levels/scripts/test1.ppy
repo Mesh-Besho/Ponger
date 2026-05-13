@@ -13,3 +13,10 @@ PRINTLN "And plus one is " (ADD Woof 1) "!"
 SET Dolphin (ADD Woof (ADD 2 2))
 
 PRINTLN "Dolphin is " Dolphin
+
+#Let's  boing
+
+CALL (GETENTITY "mainball") "unknown_boing"
+
+#UNLOCK (GETTHING TODAY DINNER)
+#GETTHING A B = A.B
