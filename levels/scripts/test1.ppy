@@ -20,3 +20,6 @@ CALL (GETENTITY "mainball") "unknown_boing"
 
 #UNLOCK (GETTHING TODAY DINNER)
 #GETTHING A B = A.B
+
+#now open the door
+

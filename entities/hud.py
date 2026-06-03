@@ -33,6 +33,8 @@ class hud(entity):
             thing.draw()
             thing_x += thing.W + 20
 
+        self.do_magnet_bar(self.scene.game.player.magnet_power, info.MAX_MAGNET_POWER)
+
         self.ball_box()
 
     def ball_box(self):
@@ -50,11 +52,18 @@ class hud(entity):
                 self.co_ordinates_cache.append(p.Vector2(X, Y))
             p.draw_texture_ex(self.ball_png, self.co_ordinates_cache[N], 0.0, 0.05001, p.WHITE)
 
-        
-    
+    def do_magnet_bar(self, power, max_power):
+        self.do_bar(power, max_power, 320, 15, info.MAGNET_BAR_WIDTH, 10, p.ORANGE, p.LIGHTGRAY, True)
+
     def do_health_bar(self, health, max_health):
-        percentage = health / max_health * 100
-        health_in_bar = percentage / 100 * info.HEALTH_BAR_WIDTH
-        p.draw_rectangle(10, 10, int(health_in_bar), 20, p.BLUE)
-        p.draw_rectangle_lines(10, 10, info.HEALTH_BAR_WIDTH, 20, p.BLACK)
-        p.draw_text(f"{percentage:.1f}%", info.HEALTH_BAR_WIDTH + 20, 10, 28, p.BLACK)
+        self.do_bar(health, max_health, 10, 10, info.HEALTH_BAR_WIDTH, 20, p.BLUE, p.BLACK, False)
+
+    def do_bar(self, current, max, x, y, width, height, color, border_color=p.BLACK, approx=False):
+        percentage = current / max * 100
+        health_in_bar = percentage / 100 * width
+        p.draw_rectangle(x, y, int(health_in_bar), height, color)
+        p.draw_rectangle_lines(x, y, width, height, border_color)
+        if approx:
+            p.draw_text(f"{percentage:.0f}%", x + width + 15, y, 28, p.BLACK)
+        else:
+            p.draw_text(f"{percentage:.1f}%", x + width + 15, y, 28, p.BLACK)

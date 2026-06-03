@@ -1,7 +1,19 @@
+import info
 class player:
     def __init__(self, balls_left=2):
         self.items = []
         self.balls_left = balls_left
+        self.magnet_power = info.MAX_MAGNET_POWER
+
+    def charge_magnet(self, dt):
+        self.magnet_power += (1.0/3.0) * dt
+        if self.magnet_power > info.MAX_MAGNET_POWER:
+            self.magnet_power = info.MAX_MAGNET_POWER
+        
+    def de_charge_magnet(self, dt):
+        self.magnet_power -= dt
+        if self.magnet_power < 0:
+            self.magnet_power = 0.0
 
     def collect_item(self, item):
         self.items.append(item)

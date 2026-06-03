@@ -73,7 +73,9 @@ class ball(sprite):
             self.apply_magnet(dt, MOUSE_MAGNET_RANGE, MOUSE_MAGNET_POWER, controls.good_mouse_position, 1)
 
         elif p.is_mouse_button_down(p.MouseButton.MOUSE_BUTTON_RIGHT):
-            self.apply_magnet(dt, MOUSE_MAGNET_RANGE, MOUSE_MAGNET_POWER, controls.good_mouse_position, -1)        
+            self.apply_magnet(dt, MOUSE_MAGNET_RANGE, MOUSE_MAGNET_POWER, controls.good_mouse_position, -1)
+        else:
+            self.scene.game.player.charge_magnet(dt)
 
         #Move and bounce  
 
@@ -161,9 +163,13 @@ class ball(sprite):
         
 
     def apply_magnet(self, dt:float, range:float, power:float, position:p.Vector2, polarity:float):
+        if self.scene.game.player.magnet_power <= 0:
+            return
+        self.scene.game.player.de_charge_magnet(dt)
         magnetism = self.calculate_magnetism(range, power, position, polarity)
         magnetism_per_frame = p.vector2_scale(magnetism, dt)
         self.direction = p.vector2_add(magnetism_per_frame, self.direction)
+
 
     def calculate_magnetism(self, range:float, power:float, position:p.Vector2, polarity:float):
         #self.direction

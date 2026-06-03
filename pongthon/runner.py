@@ -43,6 +43,8 @@ class ScriptRunner:
         
         elif statement.command.upper() == "GETENTITY":
             return self.run_command_getentity(statement.args)
+        elif statement.command.upper() == "WIN":
+            return self.run_command_win(statement.args)
 
         else:
             raise YourCodeIsStupidError(f"What nonsense command is '{statement.command}'? Never heard of it!")
@@ -79,13 +81,14 @@ class ScriptRunner:
 
         return value1 + value2
     
+    
     def run_command_call(self, args):
         if not len(args) >= 2:
             raise YourCodeIsStupidError("CALL command needs at least 2 arguments: owner, method, and optionally more arguments!")
         owner = self.get_value(args[0])
         method_name = self.get_value(args[1])
         if len(args) > 2:
-            method_args = [self.get_value(a) for a in args[2:]]
+            method_args = [self.get_value(args[2:])]
         else:
             method_args = []
 
@@ -98,6 +101,11 @@ class ScriptRunner:
         entity_name = self.get_value(args[0])
         entity = self.scene.entities.get_by_name(entity_name)  # TODO: implement entity retrieval by name
         return entity
+    
+    def run_command_win(self, args):
+        if not len(args) == 1:
+            raise YourCodeIsStupidError("WIN command needs exactly 1 argument: the next level")
+        self.scene.win(self.get_value(args[0]))
 
     def get_value(self, token:Token):
         if isinstance(token, VariableToken):

@@ -105,13 +105,18 @@ class level_scene(scene.scene):
         #from doers.sprite_spinner import sprite_spinner
         #my_ball.current_do = sprite_spinner(360)
 
-    def win(self):
-        if not self.won:
-            self.entities.add(text("YOU WIN!", 100, 101, 28, p.BLUE))
-            self.do_something_soon(timer(5.32, self.win_part_b))
-            self.won = True
+    def win(self, lev_num="a"):
+        if lev_num == "a":
+            lev_num = self.level_num + 1
+        self.entities.add(text("YOU WIN!", 100, 101, 28, p.BLUE))
+        self.do_something_soon(timer(5.32, self.win_part_b))
+        self.won = True
+        self.destination_level = lev_num
+
+        
+            
     def win_part_b(self):
-        self.game.switch_scene(level_scene(self.level_num + 1, self.game))
+        self.game.switch_scene(level_scene(self.destination_level, self.game))
 
     def collect_obj(self, obj):
         self.level.keys.remove(obj)
