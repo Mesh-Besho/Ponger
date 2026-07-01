@@ -13,6 +13,11 @@ class mouse_magnet_powerup(powerup):
         #/entities/mouse_magnet_powerup.py[class{"mouse_magnet_powerup"}(function{"update", paramaters{self, dt}})]
         super().update(dt)
         #\function
+
+    def get_default_duration(self):
+        #/entities/mouse_magnet_powerup.py[class{"mouse_magnet_powerup"}(function{"get_default_duration", paramaters{self}})]
+        return 7.5
+        #\function
     #\class
 #\file
         

@@ -1,12 +1,16 @@
 import info
+import entities.mouse_magnet_powerup as MMpowerup
 class player:
     def __init__(self, balls_left=2):
         self.items = []
         self.balls_left = balls_left
         self.magnet_power = info.MAX_MAGNET_POWER
+        self.default_charge_amount = (1.0/3.0)
+        self.charge_amount = self.default_charge_amount
+        self.allowed_to_increase = True
 
     def charge_magnet(self, dt):
-        self.magnet_power += (1.0/3.0) * dt
+        self.magnet_power += self.charge_amount * dt
         if self.magnet_power > info.MAX_MAGNET_POWER:
             self.magnet_power = info.MAX_MAGNET_POWER
         
@@ -17,6 +21,7 @@ class player:
 
     def collect_item(self, item):
         self.items.append(item)
+
 
     def lose_item(self, item):
         if item in self.items:
@@ -36,6 +41,24 @@ class player:
         return x
 
     def update(self, dt):
-        # Could use this for things like power-up durations
-        pass
+        for x in self.items:
+            x.update(dt)
+        if self.does_player_have_item_type(MMpowerup.mouse_magnet_powerup):
+            if self.allowed_to_increase:
+                self.charge_amount *= self.default_charge_amount / 3
+                self.allowed_to_increase = False
+            
+        
+        
     
+    def does_player_have_item_id(self, item_id:str):
+            if self.find_item(item_id) is not None:
+                return True
+            else:
+                return False
+            
+    def does_player_have_item_type(self, item_type:str):
+        for x in self.items:
+            if x.type == item_type:
+                return True
+        return False
