@@ -45,7 +45,7 @@ class player:
             x.update(dt)
         if self.does_player_have_item_type(MMpowerup.mouse_magnet_powerup):
             if self.allowed_to_increase:
-                self.charge_amount *= self.default_charge_amount / 3
+                self.charge_amount *= 2
                 self.allowed_to_increase = False
             
         
@@ -57,8 +57,8 @@ class player:
             else:
                 return False
             
-    def does_player_have_item_type(self, item_type:str):
+    def does_player_have_item_type(self, item_type:type):
         for x in self.items:
-            if x.type == item_type:
+            if isinstance(x, item_type):
                 return True
         return False

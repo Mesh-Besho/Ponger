@@ -21,7 +21,7 @@ class entity_manager:
         return self.entities
 
     def get_by_class(self, _class):
-        interesting = filter(lambda v: type(v) == _class, self.entities)
+        interesting = filter(lambda v: isinstance(v, _class), self.entities)
         return list(interesting)
         
     def get_by_name(self, name):

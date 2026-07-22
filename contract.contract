@@ -3,6 +3,8 @@ agreement 1:
     draw functions must not have paramaters
 agreement 2:
     update functions must have dt and only dt
+agreement 3:
+    nobody is allowed to use info.SCREEN_WIDTH or info.SCREEN_HEIGHT
 signutures:
     bALLbounce
     entityMANAGER

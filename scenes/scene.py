@@ -4,6 +4,7 @@ import controls
 from entities.entity import entity
 from entity_manager import entity_manager
 from ponger_camera import p_camera
+import info
 
 class scene(entity):
     #/scenes/scene.py[class{"scene", inherit{entity}}]
@@ -13,6 +14,7 @@ class scene(entity):
         self.camera = p_camera()
         self.entities.add(self.camera)
         self.game = game
+        
 
 
     def update(self, dt:float):
@@ -21,12 +23,30 @@ class scene(entity):
         updaters = self.entities.get_all()
         pyray_camera = self.camera.me
         controls.update_controls(pyray_camera)
+        self.check_test()
         for HUD in self.huds:
             HUD.update(dt)
         for e in updaters:
             e.update(dt)
 
-        
+    def check_test(self):
+        if info.TESTING_ALLOWED:
+            if p.is_key_down(p.KeyboardKey.KEY_RIGHT_CONTROL):
+                if p.is_key_down(p.KeyboardKey.KEY_RIGHT_SHIFT):
+                    if p.is_key_pressed(p.KeyboardKey.KEY_DELETE):
+                        self.game.debug = not self.game.debug
+                        if self.game.debug:
+                            self.debug_on()
+                        else:
+                            self.debug_off()
+    
+    def debug_on(self):
+        pass
+
+    def debug_off(self):
+        pass
+
+            
     def draw(self):
         pyray_camera = self.camera.me
 
@@ -46,5 +66,4 @@ class scene(entity):
             self.entities.remove(e)
         print("gdujgshud")
 
-    #\class
 #\file

@@ -22,7 +22,7 @@ CIRC_RADIUS = 5.0
 
 
 #c@:
-from entities.sprite import sprite
+from entities.sprite import collectable, sprite
 class ball(sprite):
     #c':
     def __init__(self, scene:level_scene, max_health=10, radius=CIRC_RADIUS):
@@ -93,10 +93,10 @@ class ball(sprite):
         if not did_touch:
             self.can_teleport = True
 
-        #Keys
-        for key in self.level.keys:
-            if self.am_I_touching(key):
-                self.scene.collect_obj(key)
+        #Objects (keys & powerups)
+        for obj in self.scene.entities.get_by_class(collectable):
+            if self.am_I_touching(obj):
+                self.scene.collect_obj(obj)
                     
                 
           
@@ -138,7 +138,6 @@ class ball(sprite):
     def do_your_script_this_instant(self, method_name:str, args:list):
         if method_name == "unknown_boing":
             self.when_hit_blocker(self.get_location(), None)
-
                 
         
 

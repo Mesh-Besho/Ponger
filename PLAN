@@ -1,12 +1,7 @@
 PLAN: "MouseMagnetPowerup"
-STARTED: TRUE
+STARTED: FALSE
 FINISHED: FALSE
-ERRORSTODAY: 1
-SESSIONS: 3
+ERRORSTODAY: 0
+SESSIONS: 4
 INSTRUCTIONS;
-1. keep the entities to manage their timer : entity timer managemet#
-2. give them a variable to store when they're collected : otherwise collected and non-collected will do the same thing#
-3. code the timer if it is collected : so the powerup would not last forever#
-4. make the player know whether the power-up is there : otherwise it would have to be a default not varied depending on powerups#
-5. code the changing of the charging speed#
-6. test!
+1. 

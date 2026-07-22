@@ -1,6 +1,6 @@
 import pyray as p
-
-TESTING = True
+TESTING = True#Temporary
+TESTING_ALLOWED = True
 
 SCREEN_WIDTH = 800#Private
 SCREEN_HEIGHT = 600#Private

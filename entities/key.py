@@ -1,6 +1,6 @@
 import pyray as p
-from entities.sprite import sprite
-class key(sprite):
+from entities.sprite import collectable, sprite
+class key(collectable):
     def __init__(self, pos, texture:str):
         super().__init__(texture)
         self.set_size_fits(15, 15)

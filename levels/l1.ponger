@@ -2,8 +2,8 @@
   "song": "level_1_fixed.ogg",
   "background_colour": "GOLD", 
   "spawn_point": {
-    "X": 123,
-    "Y": 321
+    "X": 321,
+    "Y": 123
   }, 
   "Shapes": [
     {

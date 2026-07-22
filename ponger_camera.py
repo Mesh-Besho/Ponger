@@ -8,7 +8,7 @@ class p_camera(entity):
     
     def update(self, dt):
         if not self.follow_obj is None:
-            self.move_to(self.follow_obj.get_location())
+            self.move_to(self.follow_obj.get_location().x, self.follow_obj.get_location().y)
     
     def follow(self, follow_obj:entity|None):
         self.follow_obj = follow_obj

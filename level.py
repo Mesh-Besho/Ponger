@@ -15,6 +15,7 @@
 1. !lasers
 == END OF PLAN ==
 """
+from entities.powerup import powerup
 from errors import WheresTheMusicError
 from errors.UnknownObjectTypeError import UnknownObjectTypeError
 from entities.laser import laser
@@ -46,7 +47,6 @@ class level(entity):#gjshugw
         self.doors = []
         self.winzones = []
         self.objects = []
-        self.keys = []
         self.lasers = []
         self.triggers = []
 
@@ -92,8 +92,6 @@ class level(entity):#gjshugw
         for obj in objects:
             sheep = self.load_object(obj)
             self.objects.append(sheep)
-            if isinstance(sheep, key):
-                self.keys.append(sheep)
 
         lasers = the_json.get("lasers", [])
         for laser in lasers:

@@ -1,6 +1,6 @@
 #/entities/powerup.py
-from entities.sprite import sprite
-class powerup(sprite):
+from entities.sprite import collectable, sprite
+class powerup(collectable):
     #/entities/powerup.py[class{"powerup", inherit{entity}}]
     def __init__(self, pos, t_name, duration=0.0):
         #/entities/powerup.py[class{"powerup"}(function{"__init__", paramaters{self, pos}})]
@@ -26,7 +26,6 @@ class powerup(sprite):
 
     def when_collected(self, scene):
         self.collected = True
-        scene.collect_obj(self)
         self.player = scene.game.player
 
     def update(self, dt:float):

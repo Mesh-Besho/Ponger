@@ -35,6 +35,9 @@ class hud(entity):
 
         self.do_magnet_bar(self.scene.game.player.magnet_power, info.MAX_MAGNET_POWER)
 
+        if self.scene.game.debug:
+            self.test_box()
+
         self.ball_box()
 
     def ball_box(self):
@@ -51,6 +54,9 @@ class hud(entity):
                 Y = random.randrange(int(des.y + 35), int(des.y + des.height - 10))
                 self.co_ordinates_cache.append(p.Vector2(X, Y))
             p.draw_texture_ex(self.ball_png, self.co_ordinates_cache[N], 0.0, 0.05001, p.WHITE)
+
+    def test_box(self):
+        p.draw_rectangle(10, 170, 50, 50, p.color_alpha(p.RED, 0.9))#BALLBOX|TESTBOX fill in co-ordinates
 
     def do_magnet_bar(self, power, max_power):
         self.do_bar(power, max_power, 320, 15, info.MAGNET_BAR_WIDTH, 10, p.ORANGE, p.LIGHTGRAY, True)

@@ -33,6 +33,8 @@ class menu_scene(scene.scene):
                 self.game.start_game(2)
             if p.is_key_pressed(p.KeyboardKey.KEY_THREE):
                 self.game.start_game(3)
+            if p.is_key_pressed(p.KeyboardKey.KEY_SPACE):
+                self.game.start_game(100)
 
         #\function
     #\class

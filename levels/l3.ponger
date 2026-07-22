@@ -203,7 +203,7 @@
       ]
     }
   ],
-  "doors": [
+  "*doors": [
     {
       "hinge": {
         "X": 340,
@@ -258,7 +258,7 @@
     }
   ],
   "winzones": [],
-  "lasers": [
+  "*lasers": [
     {
       "start": {
         "X": 200,
@@ -272,13 +272,13 @@
       "*colour": "RED"
     }
   ],
-  "triggers": [
+  "*triggers": [
     {
-      "enter": "test1",
+      "enter": "WIN",
       "exit": "test1",
       "activated": true,
       "vertices": [
-        {
+         {
           "X": 200,
           "Y": 200
         },

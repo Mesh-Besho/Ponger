@@ -1,7 +1,7 @@
 #/scenes/menu_scene.py
 from doers.timer import timer
 import pyray as p
-from entities import door
+from entities import door, key
 import scenes.scene as scene
 from entities.text import text
 import chatgpt as bounce_code
@@ -23,14 +23,15 @@ class level_scene(scene.scene):
         self.level = level()
         self.level.load(f"levels/l{level_num}.ponger")
         self.entities.add(self.level)
+
         self.mus = p.load_music_stream(self.level.song)
         p.play_music_stream(self.mus)
         self.won = False
 
-        my_ball = ball(self)
-        my_ball.set_location(self.level.ball_spawn)
-        my_ball.id = "mainball"
-        self.entities.add(my_ball)
+        self.my_ball = ball(self)
+        self.my_ball.set_location(self.level.ball_spawn)
+        self.my_ball.id = "mainball"
+        self.entities.add(self.my_ball)
         self.level_num = level_num
         for mikey in self.level.objects:
             self.entities.add(mikey)
@@ -91,10 +92,8 @@ class level_scene(scene.scene):
 
     def bye_ball(self):
         self.entities.add(text("You lost a ball!", 100, 101, 28, p.RED))
-        self.do_something_soon(timer(5.0, self.bye_ball_part_b))
-    def bye_ball_part_b(self):
-        self.game.restart_level()    
-        
+        self.do_something_soon(timer(5.0, self.game.restart_level))
+    
 
     #from entities.sprite import sprite
         #test_mouse = sprite(p.load_texture("mesh_besho.png"))
@@ -119,8 +118,9 @@ class level_scene(scene.scene):
         self.game.switch_scene(level_scene(self.destination_level, self.game))
 
     def collect_obj(self, obj):
-        self.level.keys.remove(obj)
-        self.level.objects.remove(obj)
+        #if isinstance(obj, key.key): 
+        #    self.level.keys.remove(obj)
+        #self.level.objects.remove(obj)
         self.entities.remove(obj)
         obj.when_collected(self)
         self.game.player.collect_item(obj)
@@ -149,6 +149,12 @@ class level_scene(scene.scene):
         if p.is_key_down(p.KeyboardKey.KEY_LEFT_CONTROL or p.is_key_down(p.KeyboardKey.KEY_RIGHT_CONTROL)):
             if p.is_key_down(p.KeyboardKey.KEY_Q):
                 from scenes.menu_scene import menu_scene
-                self.game.current_scene = menu_scene(self.game)
+                self.game.switch_scene(menu_scene(self.game))
 
-    
+    def debug_on(self):
+        super().debug_on()
+        self.camera.follow(None)
+
+    def debug_off(self):
+        super().debug_off()
+        self.camera.follow(self.my_ball)

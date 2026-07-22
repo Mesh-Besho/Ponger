@@ -1,0 +1,105 @@
+{
+  "spawn_point": {
+    "X": 100,
+    "Y": 100
+  },
+  "Shapes": [
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 0,
+          "Y": 0
+        },
+        {
+          "X": 0,
+          "Y": 200
+        },
+        {
+          "X": 50,
+          "Y": 200
+        },
+        {
+          "X": 50,
+          "Y": 0
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 50,
+          "Y": 150
+        },
+        {
+          "X": 50,
+          "Y": 200
+        },
+        {
+          "X": 200,
+          "Y": 200
+        },
+        {
+          "X": 200,
+          "Y": 150
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 200,
+          "Y": 0
+        },
+        {
+          "X": 150,
+          "Y": 0
+        },
+        {
+          "X": 150,
+          "Y": 200
+        },
+        {
+          "X": 200,
+          "Y": 200
+        }
+      ]
+    },
+    {
+      "Color": "RED",
+      "Vertices": [
+        {
+          "X": 0,
+          "Y": 0
+        },
+        {
+          "X": 0,
+          "Y": 50
+        },
+        {
+          "X": 200,
+          "Y": 50
+        },
+        {
+          "X": 200,
+          "Y": 0
+        }
+        
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "obj_id": "mouseMagnetPowerup1",
+      "type": "mouseMagnetPowerup",
+      "pos": {
+        "X": 125,
+        "Y": 125
+      },
+      "texture": "mouse_magnet_powerup.png",
+      "color": "WHITE"
+    }
+  ]
+ }

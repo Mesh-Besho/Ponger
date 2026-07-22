@@ -38,3 +38,12 @@ class sprite(entity):
             if p.check_collision_recs(p.Rectangle(self.X, self.Y, self.W, self.H),p.Rectangle(what.X, what.Y, what.W, what.H)):
                 return True
         return False
+
+class collectable(sprite):
+#-----------------^^^^^^-------- FIX - Your problem, you fix. Ashley@meshbesho.games. Ashley@meshbesho.games refused. Alex@meshbesho.games did it. £0.50 of wages lost.
+    def __init__(self, png:str):
+        super().__init__(png)
+
+    def when_collected(self, scene):
+        pass
+        
